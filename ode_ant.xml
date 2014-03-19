@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE project>
+<project default="create_all" name="Object Data Extractor" basedir=".">
+	<target name="build_number">
+	    <buildnumber/>
+	</target>
+	
+    <target name="create_run_jar">
+    	<path id="compile.classpath">
+    	    <fileset dir=".">
+    	    	<include name="/ode/lib/*.jar"/>
+    	    </fileset>
+    	</path>
+    	
+    	<manifestclasspath property="jar.classpath" jarfile="ode/ode.jar">
+	        <classpath refid="compile.classpath"/>
+	    </manifestclasspath>
+    	
+        <jar jarfile="ode/ode.jar">
+            <manifest>
+                <attribute name="Main-Class" value="net.wc3c.ode.ObjectDataExtractor"/>
+                <attribute name="Class-Path" value=". ${jar.classpath}"/>
+            </manifest>
+        	<fileset dir="bin/"/>
+        </jar>
+    </target>
+    
+	<target name="create_release" depends="create_run_jar,build_number">
+	    <zip basedir="." destfile="ode-${build.number}.zip" excludes="**">
+	        <zipfileset dir=".">
+	        	<include name="ode/"/>
+	        	<exclude name="ode/logs/"/>
+	        	<exclude name="ode/war3map.j"/>
+	        	<exclude name="ode/war3map.wts"/>
+	        	<exclude name="ode/war3map.w3u"/>
+	        	<exclude name="ode/war3map.w3t"/>
+	        	<include name="wehack.lua"/>
+	        </zipfileset>
+	    	<zipfileset dir="." includes="LICENSE.log4j2.txt" fullpath="ode/LICENSE.log4j2.txt"/>
+	    	<zipfileset dir="." includes="NOTICE.log4j2.txt" fullpath="ode/NOTICE.log4j2.txt"/>
+	    </zip>
+	</target>
+	
+	<target name="create_source" depends="build_number">
+		<zip basedir="." destfile="ode-${build.number}-src.zip" excludes="**">
+            <zipfileset dir=".">
+            	<include name=".settings/"/>
+            	<include name="ode/"/>
+            	<exclude name="ode/logs/"/>
+            	<exclude name="ode/ode.jar"/>
+            	<exclude name="ode/war3map.j"/>
+                <exclude name="ode/war3map.wts"/>
+                <exclude name="ode/war3map.w3u"/>
+                <exclude name="ode/war3map.w3t"/>
+            	<exclude name="ode/LICENSE.log4j2.txt"/>
+            	<exclude name="ode/NOTICE.log4j2.txt"/>
+            	<include name="src/"/>
+                <include name=".classpath"/>
+            	<include name=".project"/>
+            	<include name="build.number"/>
+            	<include name="LICENSE.log4j2.txt"/>
+            	<include name="NOTICE.log4j2.txt"/>
+            	<include name="log4j-api-2.0-beta9-sources.jar"/>
+                <include name="log4j-core-2.0-beta9-sources.jar"/>
+            	<include name="ode_ant.xml"/>
+            	<include name="wehack.lua"/>
+            </zipfileset>
+        </zip>
+	</target>
+	
+	<target name="create_all" depends="create_release,create_source">
+	    
+	</target>
+</project>

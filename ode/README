@@ -1,0 +1,435 @@
+﻿OBJECT DATA EXTRACTOR
+
+Installation:
+  Before anything else make sure you have a Java SE 7 VM installed.
+  You can check that by opening a command line window and typing "java -version"
+  into it. It should say something like 1.7.0_17. Anything starting with 1.6 is
+  outdated and should be upgraded before installing ODE.
+  
+  The easiest way to install Object Data Extractor is to simply extract the
+  ode-XXX.zip in your JNGP folder. However, this will replace your wehack.lua
+  file, so it may not be a good idea, especially if youve made changes to that
+  file yourself and would like to keep them.
+  
+  You can install Object Data Extractor yourself by, again, simply extracting
+  the .zip archive, but making sure not to replace wehack.lua. After that, you
+  need to manually make some changes to wehack.lua so ODE gets executed at the
+  right time when saving.
+  
+  For that, find the following line inside wehack.lua:
+    wehack.extractfile("war3map.j","war3map.j")
+  And, on a new line after that one, insert the following:
+    wehack.runprocess("javaw -Djava.library.path=\"ode\\lib\" -jar \"ode\\ode.jar\" \"ode\" \"" .. mappath .. "\"")
+    
+Usage:
+  Unit Data Extractor:
+    The syntax to invoke ODE for units is as follows:
+      //! LoadUnitData fields=<FieldIDs> [-noinit] [-defaults [races=<Races> [rawcodes=<UnitIDs>]]]
+    
+    Brackets indicate optional parameters.
+    <FieldIDs> is a comma separated list of fields to load into JASS.
+    <Races> is a comma separated list of races to load default values for.
+    <UnitIDs> is a comma separated list of units to load default values for.
+    Commas MUST NOT be surrounded by spaces.
+    
+    -noinit causes the specified fields to not be loaded into memory when the map
+      loads, but only if no other LoadUnitData command requests the same field to
+      be loaded into memory immediately. As a rule, if you requested the data to
+      not be initialized when the map is loaded, you have to load the data yourself
+      by invoking the function InitExportedUnitData before accessing the data.
+      The signature for InitExportedUnitData is as follows:
+        function InitExportedUnitData takes nothing returns nothing
+    
+    -defaults causes values for ALL units to be loaded into memory, even if they
+      havent been modified.
+      The optional parameters "races" allows you to specify races for which to
+      load default data. By default, default data for all units from all races is
+      loaded.
+      The optional parameter "rawcodes" allows you to specify units for which to
+      load default data, even if they do not match the races parameter.
+    
+    Field     JASS function                           Decription
+    udaa      GetUnitTypeDefaultActiveAbility
+    uhab      GetUnitTypeHeroAbilities
+    uabi      GetUnitTypeAbilities
+    utcc      GetUnitTypeAllowCustomTeamColor
+    uble      GetUnitTypeBlendTime
+    ucbs      GetUnitTypeCastBackswing
+    ucpt      GetUnitTypeCastPoint
+    urun      GetUnitTypeRunSpeed
+    uwal      GetUnitTypeWalkSpeed
+    ubpx      GetUnitTypeButtonPositionX
+    ubpy      GetUnitTypeButtonPositionY
+    udtm      GetUnitTypeDeathTime
+    uept      GetUnitTypeElevationSamplePoints
+    uerd      GetUnitTypeElevationSampleRadius
+    ufrd      GetUnitTypeFogOfWarSampleRadius
+    uubs      GetUnitTypeGroundTexture
+    ushr      GetUnitTypeHasWaterShadow
+    uico      GetUnitTypeIcon
+    ussi      GetUnitTypeScoreScreenIcon
+    umxp      GetUnitTypeMaxPitch
+    umxr      GetUnitTypeMaxRoll
+    umdl      GetUnitTypeModel
+    uver      GetUnitTypeModelExtraVersions
+    uocc      GetUnitTypeOcculderHeight
+    uori      GetUnitTypeOrientationInterpolation
+    uisz      GetUnitTypeSwimProjectileImpactZ
+    uimz      GetUnitTypeProjectileImpactZ
+    ulpx      GetUnitTypeProjectileLaunchX
+    ulsz      GetUnitTypeSwimProjectileLaunchZ
+    ulpz      GetUnitTypeProjectileLaunchZ
+    uprw      GetUnitTypePropulsionWindow
+    uani      GetUnitTypeRequiredAnimationNames
+    uaap      GetUnitTypeRequiredAnimationAttachments
+    ualp      GetUnitTypeRequiredAnimationLinkNames
+    ubpr      GetUnitTypeRequiredBoneNames
+    uscb      GetUnitTypeScaleProjectiles
+    usca      GetUnitTypeScale
+    uslz      GetUnitTypeSelectionZ
+    usew      GetUnitTypeSelectionOnWater
+    ussc      GetUnitTypeSelectionScale
+    ushu      GetUnitTypeShadowImage
+    ushx      GetUnitTypeShadowImageCenterX
+    ushy      GetUnitTypeShadowImageCenterY
+    ushh      GetUnitTypeShadowImageHeight
+    ushw      GetUnitTypeShadowImageWidth
+    ushb      GetUnitTypeShadowTexture
+    uspa      GetUnitTypeSpecialArt
+    utaa      GetUnitTypeTargetArt
+    utco      GetUnitTypeTeamColor
+    uclr      GetUnitTypeRedTint
+    uclg      GetUnitTypeGreenTint
+    uclb      GetUnitTypeBlueTint
+    ulos      GetUnitTypeUseExtendedLineOfSight
+    uacq      GetUnitTypeAcquisitionRange
+    uarm      GetUnitTypeArmorType
+    ubs1      GetUnitTypeBackswingPoint1
+    udp1      GetUnitTypeDamagePoint1
+    ua1f      GetUnitTypeAreaOfEffectFull1
+    ua1h      GetUnitTypeAreaOfEffectMedium1
+    ua1q      GetUnitTypeAreaOfEffectSmall1
+    ua1p      GetUnitTypeAreaOfEffectTargets1
+    ua1t      GetUnitTypeAttackType1
+    ua1c      GetUnitTypeCooldown1
+    ua1b      GetUnitTypeDamageBase1
+    uhd1      GetUnitTypeDamageFactorMedium1
+    uqd1      GetUnitTypeDamageFactorSmall1
+    udl1      GetUnitTypeDamageLossFactor1
+    ua1d      GetUnitTypeDamageNumberOfDice1
+    ua1s      GetUnitTypeDamageSidesPerDie1
+    usd1      GetUnitTypeDamageSpillDistance1
+    usr1      GetUnitTypeDamageSpillRadius1
+    udu1      GetUnitTypeDamageUpgradeAmount1
+    utc1      GetUnitTypeMaximumTargets1
+    uma1      GetUnitTypeProjectileArc1
+    ua1m      GetUnitTypeProjectileArt1
+    umh1      GetUnitTypeProjectileHoming1
+    ua1z      GetUnitTypeProjectileSpeed1
+    ua1r      GetUnitTypeRange1
+    urb1      GetUnitTypeRangeMotionBuffer1
+    uwu1      GetUnitTypeShowUI1
+    ua1g      GetUnitTypeTargetsAllowed1
+    ucs1      GetUnitTypeWeaponSound1
+    ua1w      GetUnitTypeWeaponType1
+    ubs2      GetUnitTypeBackswingPoint2
+    udp2      GetUnitTypeDamagePoint2
+    ua2f      GetUnitTypeAreaOfEffectFull2
+    ua2h      GetUnitTypeAreaOfEffectMedium2
+    ua2q      GetUnitTypeAreaOfEffectSmall2
+    ua2p      GetUnitTypeAreaOfEffectTargets2
+    ua2t      GetUnitTypeAttackType2
+    ua2c      GetUnitTypeCooldown2
+    ua2b      GetUnitTypeDamageBase2
+    uhd2      GetUnitTypeDamageFactorMedium2
+    uqd2      GetUnitTypeDamageFactorSmall2
+    udl2      GetUnitTypeDamageLossFactor2
+    ua2d      GetUnitTypeDamageNumberOfDice2
+    ua2s      GetUnitTypeDamageSidesPerDie2
+    usd2      GetUnitTypeDamageSpillDistance2
+    usr2      GetUnitTypeDamageSpillRadius2
+    udu2      GetUnitTypeDamageUpgradeAmount2
+    utc2      GetUnitTypeMaximumTargets2
+    uma2      GetUnitTypeProjectileArc2
+    ua2m      GetUnitTypeProjectileArt2
+    umh2      GetUnitTypeProjectileHoming2
+    ua2z      GetUnitTypeProjectileSpeed2
+    ua2r      GetUnitTypeRange2
+    urb2      GetUnitTypeRangeMotionBuffer2
+    uwu2      GetUnitTypeShowUI2
+    ua2g      GetUnitTypeTargetsAllowed2
+    ucs2      GetUnitTypeWeaponSound2
+    ua2w      GetUnitTypeWeaponType2
+    uaen      GetUnitTypeAttacksEnabled
+    udea      GetUnitTypeDeathType
+    udef      GetUnitTypeDefenseBase
+    udty      GetUnitTypeDefenseType
+    udup      GetUnitTypeDefenseUpgradeBonus
+    uamn      GetUnitTypeMinimumAttackRange
+    utar      GetUnitTypeTargetedAs
+    udro      GetUnitTypeDropItemsOnDeath
+    ucam      GetUnitTypeCategoryCampaign
+    uspe      GetUnitTypeCategorySpecial
+    uhos      GetUnitTypeDisplayAsNeutralHostile
+    utss      GetUnitTypeHasTilesetSpecificData
+    uine      GetUnitTypePlaceableInEditor
+    util      GetUnitTypeTilesets
+    uuch      GetUnitTypeUseClickHelper
+    urpo      GetUnitTypeGroupSeparationEnabled
+    urpg      GetUnitTypeGroupSeparationGroupNumber
+    urpp      GetUnitTypeGroupSeparationParameter
+    urpr      GetUnitTypeGroupSeparationPriority
+    umvh      GetUnitTypeFlyHeight
+    umvf      GetUnitTypeMinimumHeight
+    umvs      GetUnitTypeSpeedBase
+    umas      GetUnitTypeSpeedMaximum
+    umis      GetUnitTypeSpeedMinimum
+    umvr      GetUnitTypeTurnRate
+    umvt      GetUnitTypeMoveType
+    uabr      GetUnitTypeAIPlacementRadius
+    uabt      GetUnitTypeAIPlacementType
+    ucol      GetUnitTypeCollisionSize
+    upat      GetUnitTypePathingMap
+    upar      GetUnitTypePlacementPreventedBy
+    upap      GetUnitTypePlacementRequires
+    upaw      GetUnitTypePlacementRequiresWaterRadius
+    ubsl      GetUnitTypeBuildSound
+    ulfi      GetUnitTypeSoundLoopFadeInRate
+    ulfo      GetUnitTypeSoundLoopFadeOutRate
+    umsl      GetUnitTypeMoveSound
+    ursl      GetUnitTypeRandomSound
+    usnd      GetUnitTypeSoundSet
+    uagp      GetUnitTypeAgilityPerLevel
+    ubld      GetUnitTypeBuildTime
+    uibo      GetUnitTypeCanBeBuiltOn
+    ucbo      GetUnitTypeCanBuildOn
+    ufle      GetUnitTypeCanFlee
+    ufoo      GetUnitTypeFoodCost
+    ufma      GetUnitTypeFoodProduced
+    ufor      GetUnitTypeFormationRank
+    ubba      GetUnitTypeGoldBountyBase
+    ubdi      GetUnitTypeGoldBountyNumberOfDice
+    ubsi      GetUnitTypeGoldBountySidesPerDie
+    ugol      GetUnitTypeGoldCost
+    uhhd      GetUnitTypeHideHeroDeathMessage
+    uhhb      GetUnitTypeHideHeroInterfaceIcon
+    uhhm      GetUnitTypeHideHeroMinimapDisplay
+    uhom      GetUnitTypeHideMinimapDisplay
+    uhpm      GetUnitTypeHitPointsMaximum
+    uhpr      GetUnitTypeHitPointsRegeneration
+    uhrt      GetUnitTypeHitPointsRegenerationType
+    uinp      GetUnitTypeIntelligencePerLevel
+    ubdg      GetUnitTypeIsABuilding
+    ulev      GetUnitTypeLevel
+    ulba      GetUnitTypeLumberBountyBase
+    ulbd      GetUnitTypeLumberBountyNumberOfDice
+    ulbs      GetUnitTypeLumberBountySidesPerDie
+    ulum      GetUnitTypeLumberCost
+    umpi      GetUnitTypeManaInitialAmount
+    umpm      GetUnitTypeManaMaximum
+    umpr      GetUnitTypeManaRegeneration
+    unbm      GetUnitTypeShowNeutralBuildingIcon
+    unbr      GetUnitTypeValidAsRandomNeutralBuilding
+    upoi      GetUnitTypePointValue
+    upra      GetUnitTypePrimaryAttribute
+    upri      GetUnitTypePriority
+    urac      GetUnitTypeRace
+    ugor      GetUnitTypeRepairGoldCost
+    ulur      GetUnitTypeRepairLumberCost
+    urtm      GetUnitTypeRepairTime
+    usid      GetUnitTypeSightRadiusDay
+    usin      GetUnitTypeSightRadiusNight
+    usle      GetUnitTypeSleeps
+    uagi      GetUnitTypeStartingAgility
+    uint      GetUnitTypeStartingIntelligence
+    ustr      GetUnitTypeStartingStrength
+    usma      GetUnitTypeStockMaximum
+    usrg      GetUnitTypeStockReplenishInterval
+    usst      GetUnitTypeStockStartDelay
+    ustp      GetUnitTypeStrengthPerLevel
+    ucar      GetUnitTypeTransportedSize
+    utyp      GetUnitTypeUnitClassification
+    udep      GetUnitTypeDependencyEquivalents
+    urva      GetUnitTypeHeroRevivalLocations
+    umki      GetUnitTypeItemsMade
+    usei      GetUnitTypeItemsSold
+    ureq      GetUnitTypeRequirements
+    urqa      GetUnitTypeRequirementsLevels
+    urq1      GetUnitTypeRequirementsTier2
+    urq2      GetUnitTypeRequirementsTier3
+    urq3      GetUnitTypeRequirementsTier4
+    urq4      GetUnitTypeRequirementsTier5
+    urq5      GetUnitTypeRequirementsTier6
+    urq6      GetUnitTypeRequirementsTier7
+    urq7      GetUnitTypeRequirementsTier8
+    urq8      GetUnitTypeRequirementsTier9
+    urqc      GetUnitTypeRequirementsTiersUsed
+    ubui      GetUnitTypeStructuresBuilt
+    ures      GetUnitTypeResearchesAvailable
+    urev      GetUnitTypeRevivesDeadHeroes
+    useu      GetUnitTypeUnitsSold
+    utra      GetUnitTypeUnitsTrained
+    uupt      GetUnitTypeUpgradesTo
+    upgr      GetUnitTypeUpgradesUsed
+    ides      GetUnitTypeDescription
+    uhot      GetUnitTypeHotkey
+    unam      GetUnitTypeName
+    unsf      GetUnitTypeNameEditorSuffix
+    upro      GetUnitTypeProperNames
+    upru      GetUnitTypeProperNamesUsed
+    uawt      GetUnitTypeAwakenTooltip
+    utip      GetUnitTypeTooltip
+    utub      GetUnitTypeUbertip
+    utpr      GetUnitTypeReviveTooltip
+     
+  Item Data Extractor:
+    The syntax to invoke ODE for items is as follows:
+      //! LoadItemData fields=<FieldIDs> [-noinit] [-defaults [classes=<Classes> [rawcodes=<ItemIDs>]]]
+    
+    Brackets indicate optional parameters.
+    <FieldIDs> is a comma separated list of fields to load into JASS.
+    <Classes> is a comma separated list of item classes to load default values for.
+    <ItemIDs> is a comma separated list of items to load default values for.
+    Commas MUST NOT be surrounded by spaces.
+    
+    -noinit causes the specified fields to not be loaded into memory when the map
+      loads, but only if no other LoadItemData command requests the same field to
+      be loaded into memory immediately. As a rule, if you requested the data to
+      not be initialized when the map is loaded, you have to load the data yourself
+      by invoking the function InitExportedItemData before accessing the data.
+      The signature for InitExportedItemData is as follows:
+        function InitExportedItemData takes nothing returns nothing
+    
+    -defaults causes values for ALL items to be loaded into memory, even if they
+      havent been modified.
+      The optional parameters "classes" allows you to specify classes for which
+      to load default data. By default, default data for all items from all
+      classes is loaded.
+      The optional parameter "rawcodes" allows you to specify items for which to
+      load default data, even if they do not match the classes parameter.
+    
+    Field     JASS function                     Decription
+    iabi      GetItemTypeAbilities
+    iarm      GetItemTypeArmorType
+    iico      GetItemTypeIcon
+    ubpx      GetItemTypeButtonPositionX
+    ubpy      GetItemTypeButtonPositionY
+    icla      GetItemTypeClass
+    iclb      GetItemTypeColorBlue
+    iclg      GetItemTypeColorGreen
+    iclr      GetItemTypeColorRed
+    icid      GetItemTypeCooldownGroup
+    ides      GetItemTypeDescription
+    idrp      GetItemTypeDropsOnDeath
+    idro      GetItemTypeDroppable
+    ifil      GetItemTypeModel
+    igol      GetItemTypeGoldCost
+    uhot      GetItemTypeHotkey
+    ihtp      GetItemTypeHealth
+    iicd      GetItemTypeIgnoreCooldown
+    ilev      GetItemTypeLevel
+    ilum      GetItemTypeLumberCost
+    imor      GetItemTypeIsTransformable
+    unam      GetItemTypeName
+    ilvo      GetItemTypeUnclassifiedLevel
+    ipaw      GetItemTypeIsPawnable
+    iper      GetItemTypeIsPerishable
+    iprn      GetItemTypeIsRandomChoice
+    ipow      GetItemTypeIsPowerup
+    ipri      GetItemTypePriority
+    ureq      GetItemTypeRequirements
+    urqa      GetItemTypeRequiredLevels
+    isca      GetItemTypeScale
+    isel      GetItemTypeIsSellable
+    issc      GetItemTypeSelectionSize
+    isto      GetItemTypeMaximumStock
+    istr      GetItemTypeStockReplenishInterval
+    isst      GetItemTypeStartingStock
+    utip      GetItemTypeTooltip
+    utub      GetItemTypeUbertip
+    iusa      GetItemTypeIsUsable
+    iuse      GetItemTypeUses
+    
+  Destructable Data Extractor:
+    The syntax to invoke ODE for items is as follows:
+      //! LoadDestructableData fields=<FieldIDs> [-noinit] [-defaults [categories=<Categories> [rawcodes=<DestructableIDs>]]]
+    
+    Brackets indicate optional parameters.
+    <FieldIDs> is a comma separated list of fields to load into JASS.
+    <Categories> is a comma separated list of destructable categories to load
+      default values for.
+    <DestructableIDs> is a comma separated list of destructables to load
+      default values for.
+    Commas MUST NOT be surrounded by spaces.
+    
+    -noinit causes the specified fields to not be loaded into memory when the
+      map loads, but only if no other LoadDestructableData command requests the
+      same field to be loaded into memory immediately. As a rule, if you
+      requested the data to not be initialized when the map is loaded, you have
+      to load the data yourself by invoking the function
+      InitExportedDestructableData before accessing the data.
+      The signature for InitExportedDestructableData is as follows:
+        function InitExportedDestructableData takes nothing returns nothing
+    
+    -defaults causes values for ALL destructables to be loaded into memory,
+      even if they havent been modified.
+      The optional parameters "categories" allows you to specify classes for
+      which to load default data. By default, default data for all destructable
+      from all categories is loaded.
+      The optional parameter "rawcodes" allows you to specify destructables for
+      which to load default data, even if they do not match the categories
+      parameter.
+    
+    Field     JASS function                             Decription
+    bnam      GetDestructableTypeName
+    bsuf      GetDestructableTypeEditorSuffix
+    bcat      GetDestructableTypeCategory
+    btil      GetDestructableTypeTilesets
+    btsp      GetDestructableTypeIsTilesetSpecific
+    bfil      GetDestructableTypeFile
+    blit      GetDestructableTypeIsLightweight
+    bflo      GetDestructableTypeIsFatLOS
+    btxi      GetDestructableTypeTextureID
+    btxf      GetDestructableTypeTextureFile
+    buch      GetDestructableTypeUseClickHelper
+    bonc      GetDestructableTypeCanPlaceOnCliffs
+    bonw      GetDestructableTypeCanPlaceOnWater
+    bcpd      GetDestructableTypeCanPlaceDead
+    bwal      GetDestructableTypeIsWalkable
+    bclh      GetDestructableTypeCliffHeight
+    btar      GetDestructableTypeTargetType
+    barm      GetDestructableTypeArmor
+    bvar      GetDestructableTypeNumVar
+    bhps      GetDestructableTypeHealth
+    boch      GetDestructableTypeOcclusionHeight
+    bflh      GetDestructableTypeFlyHeight
+    bfxr      GetDestructableTypeFixedRotation
+    bsel      GetDestructableTypeSelectionSize
+    bmis      GetDestructableTypeMinScale
+    bmas      GetDestructableTypeMaxScale
+    bcpr      GetDestructableTypeCanPlaceRandScale
+    bmap      GetDestructableTypeMaxPitch
+    bmar      GetDestructableTypeMaxRoll
+    brad      GetDestructableTypeRadius
+    bfra      GetDestructableTypeFogRadius
+    bfvi      GetDestructableTypeFogVisibility
+    bptx      GetDestructableTypePathTexture
+    bptd      GetDestructableTypePathTextureDeath
+    bdsn      GetDestructableTypeDeathSound
+    bshd      GetDestructableTypeShadow
+    bsmm      GetDestructableTypeShowInMM
+    bmmr      GetDestructableTypeMMRed
+    bmmg      GetDestructableTypeMMGreen
+    bmmb      GetDestructableTypeMMBlue
+    bumm      GetDestructableTypeUseMMColor
+    bbut      GetDestructableTypeBuildTime
+    bret      GetDestructableTypeRepairTime
+    breg      GetDestructableTypeGoldRepairCost
+    brel      GetDestructableTypeLumberRepairCost
+    busr      GetDestructableTypeUserList
+    bvcr      GetDestructableTypeColorRed
+    bvcg      GetDestructableTypeColorGreen
+    bvcb      GetDestructableTypeColorBlue
+    bgse      GetDestructableTypeIsSelectable
+    bgsc      GetDestructableTypeSelectionCircleSize
+    bgpm      GetDestructableTypePortraitModel

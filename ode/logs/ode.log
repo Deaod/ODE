@@ -1,0 +1,39 @@
+18:08:00.544 [main] TRACE entry params([Ljava.lang.String;@64cfe0)
+18:08:00.545 [main] TRACE entry params(ode, E:\Bagaric\TestMap.w3x)
+18:08:00.561 [main] INFO  Found war3map.w3u
+18:08:00.562 [main] INFO  Extracting unit data
+18:08:00.607 [main] INFO  Finished extracting unit data
+18:08:00.607 [main] INFO  Writing new script file to disk
+18:08:00.608 [main] INFO  Finished writing script file to disk
+18:08:00.608 [main] INFO  Replacing script file in map
+18:08:00.694 [main] INFO  Finished replacing script file in map
+18:08:00.694 [main] TRACE exit
+18:08:00.694 [main] INFO  Finished. Took 148.872486 ms
+18:08:00.694 [main] TRACE exit
+18:13:09.726 [main] TRACE entry params([Ljava.lang.String;@64cfe0)
+18:13:09.727 [main] TRACE entry params(ode, E:\Bagaric\TestMap.w3x)
+18:13:09.745 [main] INFO  Found war3map.w3u
+18:13:09.747 [main] INFO  Extracting unit data
+18:13:09.794 [main] INFO  Finished extracting unit data
+18:13:09.795 [main] INFO  Writing new script file to disk
+18:13:09.796 [main] INFO  Finished writing script file to disk
+18:13:09.796 [main] INFO  Replacing script file in map
+18:13:09.881 [main] INFO  Finished replacing script file in map
+18:13:09.882 [main] TRACE exit
+18:13:09.882 [main] INFO  Finished. Took 154.674248 ms
+18:13:09.882 [main] TRACE exit
+18:17:29.513 [main] TRACE Entering ObjectDataExtractor.main(String[])
+18:17:29.515 [main] TRACE entry params(ode, E:\Bagaric\TestMap.w3x)
+18:17:29.515 [main] TRACE Entering ObjectDataExtractor.<init>(String,String)
+18:17:29.515 [main] TRACE entry params(ode, E:\Bagaric\TestMap.w3x)
+18:17:29.532 [main] INFO  Found war3map.w3u
+18:17:29.534 [main] INFO  Extracting unit data
+18:17:29.580 [main] INFO  Finished extracting unit data
+18:17:29.580 [main] INFO  Writing new script file to disk
+18:17:29.581 [main] INFO  Finished writing script file to disk
+18:17:29.581 [main] INFO  Replacing script file in map
+18:17:29.669 [main] INFO  Finished replacing script file in map
+18:17:29.669 [main] TRACE Leaving ObjectDataExtractor.<init>(String,String)
+18:17:29.669 [main] TRACE exit
+18:17:29.669 [main] INFO  Finished. Took 154.198114 ms
+18:17:29.669 [main] TRACE exit
