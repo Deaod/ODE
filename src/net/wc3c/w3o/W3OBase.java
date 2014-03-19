@@ -14,9 +14,9 @@ import net.wc3c.util.BufferedDataChannel;
 import net.wc3c.wts.WTSFile;
 
 public abstract class W3OBase<T extends W3Object<?>> {
-    private Path            source;
-    private WTSFile         triggerStrings;
-    private Map<Integer, T> entries = new Hashtable<Integer, T>();
+    private final Path            source;
+    private final WTSFile         triggerStrings;
+    private final Map<Integer, T> entries = new Hashtable<Integer, T>();
     
     /**
      * Creates a new W3O file from the specified source and the specified WTS file.
@@ -25,7 +25,7 @@ public abstract class W3OBase<T extends W3Object<?>> {
      * @param triggerStrings the WTS file
      * @throws IOException in case there was a problem reading from the W3O file
      */
-    public W3OBase(Path source, WTSFile triggerStrings) throws IOException {
+    public W3OBase(final Path source, final WTSFile triggerStrings) throws IOException {
         this.source = source;
         this.triggerStrings = triggerStrings;
         
@@ -38,7 +38,7 @@ public abstract class W3OBase<T extends W3Object<?>> {
      * @param source the W3O file
      * @throws IOException in case there was a problem reading from the W3O file
      */
-    public W3OBase(Path source) throws IOException {
+    public W3OBase(final Path source) throws IOException {
         this(source, null);
     }
     
@@ -49,7 +49,7 @@ public abstract class W3OBase<T extends W3Object<?>> {
      * @param triggerStrings the WTS file
      * @throws IOException in case there was a problem reading from the W3O file
      */
-    public W3OBase(String sourcePath, WTSFile triggerStrings) throws IOException {
+    public W3OBase(final String sourcePath, final WTSFile triggerStrings) throws IOException {
         this(Paths.get(sourcePath), triggerStrings);
     }
     
@@ -59,7 +59,7 @@ public abstract class W3OBase<T extends W3Object<?>> {
      * @param sourcePath path to the W3O file
      * @throws IOException in case there was a problem reading from the W3O file
      */
-    public W3OBase(String sourcePath) throws IOException {
+    public W3OBase(final String sourcePath) throws IOException {
         this(Paths.get(sourcePath), null);
     }
     
@@ -68,7 +68,8 @@ public abstract class W3OBase<T extends W3Object<?>> {
      * 
      * @param triggerStrings the WTS file
      */
-    public W3OBase(WTSFile triggerStrings) {
+    public W3OBase(final WTSFile triggerStrings) {
+        source = null;
         this.triggerStrings = triggerStrings;
     }
     
@@ -96,31 +97,31 @@ public abstract class W3OBase<T extends W3Object<?>> {
         return Collections.unmodifiableCollection(this.entries.values());
     }
     
-    public void addEntry(T entry) {
+    public void addEntry(final T entry) {
         this.entries.put(entry.getId(), entry);
     }
     
-    public T getEntry(int id) {
+    public T getEntry(final int id) {
         return this.entries.get(id);
     }
     
     protected abstract T readEntry(BufferedDataChannel dc) throws IOException;
     
-    private void parseTable(BufferedDataChannel dc) throws IOException {
-        int numEntries = dc.readInt();
+    private void parseTable(final BufferedDataChannel dc) throws IOException {
+        final int numEntries = dc.readInt();
         
         for (int i = 0; i < numEntries; i += 1) {
-            T entry = readEntry(dc);
+            final T entry = readEntry(dc);
             
             this.entries.put(entry.getId(), entry);
         }
     }
     
     private void parse() throws IOException {
-        BufferedDataChannel dc = new BufferedDataChannel(FileChannel.open(this.source), ByteOrder.LITTLE_ENDIAN);
+        final BufferedDataChannel dc = new BufferedDataChannel(FileChannel.open(this.source), ByteOrder.LITTLE_ENDIAN);
         
         @SuppressWarnings("unused")
-        int version = dc.readInt();
+        final int version = dc.readInt();
         
         parseTable(dc);
         parseTable(dc);

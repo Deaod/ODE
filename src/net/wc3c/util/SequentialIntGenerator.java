@@ -4,8 +4,8 @@ public class SequentialIntGenerator {
     private int index;
     private int count = 0;
     
-    public SequentialIntGenerator(int startingIndex) {
-        this.index = startingIndex;
+    public SequentialIntGenerator(final int startingIndex) {
+        index = startingIndex;
     }
     
     public SequentialIntGenerator() {
@@ -13,13 +13,13 @@ public class SequentialIntGenerator {
     }
     
     public int next() {
-        int result = this.index;
-        this.index += 1;
-        this.count += 1;
+        final int result = index;
+        index += 1;
+        count += 1;
         return result;
     }
     
     public int getGeneratedCount() {
-        return this.count;
+        return count;
     }
 }

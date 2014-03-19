@@ -16,7 +16,7 @@ public class W3BFile extends W3OBase<Destructable> {
      * @param trigStrs the WTS file.
      * @throws IOException in case there was a problem reading from the W3O file.
      */
-    public W3BFile(Path source, WTSFile trigStrs) throws IOException {
+    public W3BFile(final Path source, final WTSFile trigStrs) throws IOException {
         super(source, trigStrs);
     }
     
@@ -27,7 +27,7 @@ public class W3BFile extends W3OBase<Destructable> {
      * @param trigStrs the WTS file.
      * @throws IOException in case there was a problem reading from the W3O file.
      */
-    public W3BFile(String sourcePath, WTSFile trigStrs) throws IOException {
+    public W3BFile(final String sourcePath, final WTSFile trigStrs) throws IOException {
         super(sourcePath, trigStrs);
     }
     
@@ -37,7 +37,7 @@ public class W3BFile extends W3OBase<Destructable> {
      * @param source the W3B file.
      * @throws IOException in case there was a problem reading from the W3O file.
      */
-    public W3BFile(Path source) throws IOException {
+    public W3BFile(final Path source) throws IOException {
         super(source);
     }
     
@@ -47,7 +47,7 @@ public class W3BFile extends W3OBase<Destructable> {
      * @param sourcePath path to the W3B file.
      * @throws IOException in case there was a problem reading from the W3O file.
      */
-    public W3BFile(String sourcePath) throws IOException {
+    public W3BFile(final String sourcePath) throws IOException {
         super(sourcePath);
     }
     
@@ -56,7 +56,7 @@ public class W3BFile extends W3OBase<Destructable> {
      * 
      * @param trigStrs the WTS file;
      */
-    public W3BFile(WTSFile trigStrs) {
+    public W3BFile(final WTSFile trigStrs) {
         super(trigStrs);
     }
     
@@ -81,7 +81,7 @@ public class W3BFile extends W3OBase<Destructable> {
      * 
      * @param destructable the destructable to add.
      */
-    public void addDestructable(Destructable destructable) {
+    public void addDestructable(final Destructable destructable) {
         destructable.setContext(this);
         addEntry(destructable);
     }
@@ -92,18 +92,18 @@ public class W3BFile extends W3OBase<Destructable> {
      * @param destructableId the destructable ID to look for.
      * @return the desired destructable, if it exists, <code>null</code> otherwise.
      */
-    public Destructable getDestructable(int destructableId) {
+    public Destructable getDestructable(final int destructableId) {
         return getEntry(destructableId);
     }
     
     @Override
-    protected Destructable readEntry(BufferedDataChannel dc) throws IOException {
+    protected Destructable readEntry(final BufferedDataChannel dc) throws IOException {
         return new Destructable(dc, this);
     }
     
     public static class Destructable extends W3Object<W3BFile> {
         @Override
-        protected Property<?> readProperty(BufferedDataChannel dc) throws IOException {
+        protected Property<?> readProperty(final BufferedDataChannel dc) throws IOException {
             return new Property<Destructable>(dc, this);
         }
         
@@ -115,7 +115,7 @@ public class W3BFile extends W3OBase<Destructable> {
          * @return the property identified by the specified ID or <code>null</code> if no such property exists.
          */
         @SuppressWarnings("unchecked")
-        public Property<Destructable> getProperty(int fieldId) {
+        public Property<Destructable> getProperty(final int fieldId) {
             return (Property<Destructable>) getProperty(Property.generateKey(fieldId));
         }
         
@@ -127,7 +127,7 @@ public class W3BFile extends W3OBase<Destructable> {
          * @return the property identified by the specified ID or <code>null</code> if no such property exists.
          */
         @SuppressWarnings("unchecked")
-        public Property<Destructable> getPropertyEx(int fieldId) {
+        public Property<Destructable> getPropertyEx(final int fieldId) {
             return (Property<Destructable>) getPropertyEx(Property.generateKey(fieldId));
         }
         
@@ -138,7 +138,7 @@ public class W3BFile extends W3OBase<Destructable> {
          * @return <code>true</code> if this destructable has a property with the specified ID, <code>false</code>
          *         otherwise.
          */
-        public boolean hasProperty(int fieldId) {
+        public boolean hasProperty(final int fieldId) {
             return hasProperty(Property.generateKey(fieldId));
         }
         
@@ -148,7 +148,7 @@ public class W3BFile extends W3OBase<Destructable> {
          * 
          * @param property the property to add.
          */
-        public void addProperty(Property<Destructable> property) {
+        public void addProperty(final Property<Destructable> property) {
             if (hasProperty(property.getFieldId())) {
                 return;
             }
@@ -157,7 +157,7 @@ public class W3BFile extends W3OBase<Destructable> {
             putProperty(property.generateKey(), property);
         }
         
-        Destructable(BufferedDataChannel dc, W3BFile context) throws IOException {
+        Destructable(final BufferedDataChannel dc, final W3BFile context) throws IOException {
             super(dc, context);
         }
         
@@ -167,7 +167,7 @@ public class W3BFile extends W3OBase<Destructable> {
          * @param parentId the ID of the parent destructable.
          * @param id the new destructable's ID.
          */
-        public Destructable(int parentId, int id) {
+        public Destructable(final int parentId, final int id) {
             super(parentId, id);
         }
         
@@ -176,7 +176,7 @@ public class W3BFile extends W3OBase<Destructable> {
          * 
          * @param id the new destructable's ID.
          */
-        public Destructable(int id) {
+        public Destructable(final int id) {
             super(id);
         }
     }

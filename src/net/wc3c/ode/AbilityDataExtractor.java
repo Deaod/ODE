@@ -8,24 +8,24 @@ import net.wc3c.w3o.W3AFile.Ability;
 
 public class AbilityDataExtractor extends Extractor<W3AFile, Ability> {
     
-    protected AbilityDataExtractor(File enclosingFolder, W3AFile objectData) throws IOException {
+    protected AbilityDataExtractor(final File enclosingFolder, final W3AFile objectData) throws IOException {
         super(enclosingFolder, objectData);
     }
     
     @Override
-    protected Field createField(Integer id, String name) {
+    protected Field createField(final Integer id, final String name) {
         // TODO Auto-generated method stub
         return null;
     }
     
     @Override
-    protected LoadRequest createLoadRequest(String loadRequestLine) {
+    protected LoadRequest createLoadRequest(final String loadRequestLine) {
         // TODO Auto-generated method stub
         return null;
     }
     
     @Override
-    protected FieldRequest createFieldRequest(Field field, LoadRequest request) {
+    protected FieldRequest createFieldRequest(final Field field, final LoadRequest request) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -58,13 +58,13 @@ public class AbilityDataExtractor extends Extractor<W3AFile, Ability> {
     }
     
     @Override
-    protected void loadProfile(File file) throws IOException {
+    protected void loadProfile(final File file) throws IOException {
         // TODO Auto-generated method stub
         
     }
     
     @Override
-    protected void loadSLK(File file) throws IOException {
+    protected void loadSLK(final File file) throws IOException {
         // TODO Auto-generated method stub
         
     }

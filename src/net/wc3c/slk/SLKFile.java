@@ -20,14 +20,14 @@ public class SLKFile {
     private Object[][]           cells  = null;
     
     private static String readFileToString(final String path, final Charset encoding) throws IOException {
-        byte[] encoded = Files.readAllBytes(Paths.get(path));
+        final byte[] encoded = Files.readAllBytes(Paths.get(path));
         return encoding.decode(ByteBuffer.wrap(encoded)).toString();
     }
     
     private int convertNumber(final String num, final int lineNumber) {
         try {
             return Integer.parseInt(num) - 1;
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             throw new SLKParseException(null);
         }
     }
@@ -41,12 +41,12 @@ public class SLKFile {
             try {
                 // try reading it as an Integer
                 value = Integer.valueOf(line);
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException e) {
                 // not an integer
                 try {
                     // try reading as a float
                     value = Float.valueOf(line);
-                } catch (NumberFormatException e2) {
+                } catch (final NumberFormatException e2) {
                     // not a float
                     if (line.equalsIgnoreCase("true") || line.equalsIgnoreCase("false")) {
                         // see if its a boolean
@@ -68,7 +68,7 @@ public class SLKFile {
         int y = -1;
         
         for (int i = 1; i < fields.length; i += 1) {
-            String field = fields[i];
+            final String field = fields[i];
             switch (field.charAt(0)) {
                 case 'X':
                     x = convertNumber(field.substring(1), lineNumber);
@@ -82,8 +82,8 @@ public class SLKFile {
         if (x == -1 || y == -1) {
             throw new SLKParseException(null);
         }
-        this.width = x + 1;
-        this.height = y + 1;
+        width = x + 1;
+        height = y + 1;
         cells = new Object[height][width];
     }
     
@@ -91,18 +91,18 @@ public class SLKFile {
     private int currentY = 0;
     
     private void recordC(final String[] fields, final int lineNumber) {
-        int x = this.currentX;
-        int y = this.currentY;
+        int x = currentX;
+        int y = currentY;
         Object value = null;
         
         for (int i = 1; i < fields.length; i += 1) {
-            String field = fields[i];
+            final String field = fields[i];
             switch (field.charAt(0)) {
                 case 'X':
-                    this.currentX = x = convertNumber(field.substring(1), lineNumber);
+                    currentX = x = convertNumber(field.substring(1), lineNumber);
                     break;
                 case 'Y':
-                    this.currentY = y = convertNumber(field.substring(1), lineNumber);
+                    currentY = y = convertNumber(field.substring(1), lineNumber);
                     break;
                 case 'K':
                     value = parseValue(field.substring(1), lineNumber);
@@ -120,10 +120,10 @@ public class SLKFile {
     }
     
     private void parse() throws IOException {
-        String line = this.slkReader.readLine();
+        String line = slkReader.readLine();
         int lineNumber = 1;
         while (line != null) {
-            String[] fields = line.split(";");
+            final String[] fields = line.split(";");
             switch (fields[0]) {
                 case "ID":
                     recordID(fields, lineNumber);
@@ -153,7 +153,7 @@ public class SLKFile {
             }
             
             lineNumber += 1;
-            line = this.slkReader.readLine();
+            line = slkReader.readLine();
         }
     }
     
@@ -163,7 +163,7 @@ public class SLKFile {
      * @return The number of columns of the SLK
      */
     public int getWidth() {
-        return this.width;
+        return width;
     }
     
     /**
@@ -172,7 +172,7 @@ public class SLKFile {
      * @return The number of rows of the SLK.
      */
     public int getHeight() {
-        return this.height;
+        return height;
     }
     
     /**
@@ -183,7 +183,7 @@ public class SLKFile {
      * @throws IndexOutOfBoundsException.
      */
     public Object[] getRow(final int n) throws IndexOutOfBoundsException {
-        return this.cells[n];
+        return cells[n];
     }
     
     /**
@@ -195,7 +195,7 @@ public class SLKFile {
      * @throws IndexOutOfBoundsException.
      */
     public Object getCell(final int x, final int y) throws IndexOutOfBoundsException {
-        return this.cells[y][x];
+        return cells[y][x];
     }
     
     /**
@@ -213,7 +213,7 @@ public class SLKFile {
      * 
      */
     public SLKFile(final File path) throws IOException {
-        this.slkReader = new BufferedReader(new StringReader(readFileToString(path.getPath(), StandardCharsets.UTF_8)));
+        slkReader = new BufferedReader(new StringReader(readFileToString(path.getPath(), StandardCharsets.UTF_8)));
         parse();
     }
     

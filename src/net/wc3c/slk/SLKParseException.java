@@ -9,9 +9,9 @@ package net.wc3c.slk;
  * @author Deaod
  * 
  */
-public class SLKParseException extends SLKException {
+public class SLKParseException extends RuntimeException {
     
-    SLKParseException(String string) {
+    SLKParseException(final String string) {
         super(string);
     }
     

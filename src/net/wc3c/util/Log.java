@@ -10,39 +10,39 @@ public final class Log {
         logger = LogManager.getLogger();
     }
     
-    public static final void debug(String msg, Object... params) {
+    public static final void debug(final String msg, final Object... params) {
         logger.debug(msg, params);
     }
     
-    public static final void info(String msg, Object... params) {
+    public static final void info(final String msg, final Object... params) {
         logger.info(msg, params);
     }
     
-    public static final void trace(String msg, Object... params) {
+    public static final void trace(final String msg, final Object... params) {
         logger.trace(msg, params);
     }
     
-    public static final void warn(String msg, Object... params) {
+    public static final void warn(final String msg, final Object... params) {
         logger.warn(msg, params);
     }
     
-    public static final void error(String msg, Object... params) {
+    public static final void error(final String msg, final Object... params) {
         logger.error(msg, params);
     }
     
-    public static final void fatal(String msg, Object... params) {
+    public static final void fatal(final String msg, final Object... params) {
         logger.fatal(msg, params);
     }
     
-    public static final void exception(Throwable t) {
+    public static final void exception(final Throwable t) {
         logger.catching(t);
     }
     
-    public static final void entry(Object... params) {
+    public static final void entry(final Object... params) {
         logger.entry(params);
     }
     
-    public static final <R> R exit(R returnValue) {
+    public static final <R> R exit(final R returnValue) {
         return logger.exit(returnValue);
     }
     

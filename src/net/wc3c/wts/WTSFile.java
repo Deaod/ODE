@@ -17,8 +17,8 @@ import java.util.Map;
  * 
  */
 public class WTSFile {
-    private Path                 source;
-    private Map<Integer, String> trigStrings = new Hashtable<Integer, String>();
+    private final Path                 source;
+    private final Map<Integer, String> trigStrings = new Hashtable<Integer, String>();
     
     private static enum ParseState {
         NEXT_TRIGSTR,
@@ -27,8 +27,8 @@ public class WTSFile {
     }
     
     private void parse() throws IOException {
-        String content = StandardCharsets.UTF_8.decode(ByteBuffer.wrap(Files.readAllBytes(this.source))).toString();
-        BufferedReader sourceReader = new BufferedReader(new StringReader(content));
+        final String content = StandardCharsets.UTF_8.decode(ByteBuffer.wrap(Files.readAllBytes(source))).toString();
+        final BufferedReader sourceReader = new BufferedReader(new StringReader(content));
         ParseState state = ParseState.NEXT_TRIGSTR;
         
         // WTS files may start with a Byte Order Mark, which we will have to skip.
@@ -59,7 +59,7 @@ public class WTSFile {
                 
                 case END_OF_DATA:
                     if (currentLine.startsWith("}")) {
-                        this.trigStrings.put(id, data.toString());
+                        trigStrings.put(id, data.toString());
                         data = new StringBuffer();
                         state = ParseState.NEXT_TRIGSTR;
                     } else {
@@ -72,20 +72,20 @@ public class WTSFile {
         sourceReader.close();
     }
     
-    public WTSFile(Path source) throws IOException {
+    public WTSFile(final Path source) throws IOException {
         this.source = source;
         
         parse();
     }
     
-    public WTSFile(String sourcePath) throws IOException {
-        this.source = Paths.get(sourcePath);
+    public WTSFile(final String sourcePath) throws IOException {
+        source = Paths.get(sourcePath);
         
         parse();
     }
     
-    public String get(int index) {
-        return this.trigStrings.get(index);
+    public String get(final int index) {
+        return trigStrings.get(index);
     }
     
 }

@@ -33,13 +33,13 @@ public final class ObjectDataExtractor {
     private static final String FILE_NAME_W3T    = "war3map.w3t";
     private static final String FILE_NAME_W3B    = "war3map.w3b";
     
-    static String readFileToString(String path, Charset encoding) throws IOException {
-        byte[] encoded = Files.readAllBytes(Paths.get(path));
+    static String readFileToString(final String path, final Charset encoding) throws IOException {
+        final byte[] encoded = Files.readAllBytes(Paths.get(path));
         return encoding.decode(ByteBuffer.wrap(encoded)).toString();
     }
     
-    private static <T extends W3OBase<?>> T loadW3OFile(Class<T> cls, MPQArchive map, String archivedFile, File file,
-            WTSFile wts) throws Exception {
+    private static <T extends W3OBase<?>> T loadW3OFile(final Class<T> cls, final MPQArchive map,
+            final String archivedFile, final File file, final WTSFile wts) throws Exception {
         T w3o;
         if (map.hasFile(archivedFile)) {
             Log.info("Found " + archivedFile);
@@ -52,16 +52,16 @@ public final class ObjectDataExtractor {
         return w3o;
     }
     
-    private ObjectDataExtractor(String odeFolderPath, String mapPath) throws Exception {
+    private ObjectDataExtractor(final String odeFolderPath, final String mapPath) throws Exception {
         Log.entry(odeFolderPath, mapPath);
-        MPQArchive map = new MPQArchive(mapPath);
+        final MPQArchive map = new MPQArchive(mapPath);
         
-        File odeFolder = new File(odeFolderPath);
-        File jFile = new File(odeFolder, FILE_NAME_SCRIPT);
-        File wtsFile = new File(odeFolder, FILE_NAME_WTS);
-        File w3uFile = new File(odeFolder, FILE_NAME_W3U);
-        File w3tFile = new File(odeFolder, FILE_NAME_W3T);
-        File w3bFile = new File(odeFolder, FILE_NAME_W3B);
+        final File odeFolder = new File(odeFolderPath);
+        final File jFile = new File(odeFolder, FILE_NAME_SCRIPT);
+        final File wtsFile = new File(odeFolder, FILE_NAME_WTS);
+        final File w3uFile = new File(odeFolder, FILE_NAME_W3U);
+        final File w3tFile = new File(odeFolder, FILE_NAME_W3T);
+        final File w3bFile = new File(odeFolder, FILE_NAME_W3B);
         
         map.extractFile(FILE_NAME_SCRIPT, jFile);
         map.extractFile(FILE_NAME_WTS, wtsFile);
@@ -69,9 +69,9 @@ public final class ObjectDataExtractor {
         Log.info("Loading JASS into memory");
         String scriptContent = readFileToString(jFile.getPath(), StandardCharsets.UTF_8);
         Log.info("Loading WTS from file");
-        WTSFile wts = new WTSFile(wtsFile.getPath());
+        final WTSFile wts = new WTSFile(wtsFile.getPath());
         
-        List<Extractor<?, ?>> extractors = new LinkedList<Extractor<?, ?>>();
+        final List<Extractor<?, ?>> extractors = new LinkedList<Extractor<?, ?>>();
         
         //-------------------------------------------------------
         // Unit Data Extractor
@@ -90,21 +90,21 @@ public final class ObjectDataExtractor {
                 w3bFile,
                 wts)));
         
-        for (Extractor<?, ?> extractor : extractors) {
+        for (final Extractor<?, ?> extractor : extractors) {
             scriptContent = extractor.processScript(scriptContent);
         }
         
         Log.info("Writing new script file to disk");
-        FileWriter fw = new FileWriter(jFile);
+        final FileWriter fw = new FileWriter(jFile);
         fw.write(scriptContent);
         fw.close();
         
         Log.info("Replacing script file in map");
-        MPQFile file = new MPQFile(map, FILE_NAME_SCRIPT, MPQFileOpenScope.MPQ);
+        final MPQFile file = new MPQFile(map, FILE_NAME_SCRIPT, MPQFileOpenScope.MPQ);
         file.removeFromArchive();
         file.close();
         
-        MPQCompressionFlags compr = new MPQCompressionFlags();
+        final MPQCompressionFlags compr = new MPQCompressionFlags();
         compr.setCompression(Compression.BZIP2);
         
         map.addFile(jFile.getAbsolutePath(), FILE_NAME_SCRIPT, MPQFileFlags.fromInteger(0x200), compr);
@@ -114,19 +114,19 @@ public final class ObjectDataExtractor {
         Log.exit();
     }
     
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         Log.entry((Object[]) args);
-        long startTime = System.nanoTime();
+        final long startTime = System.nanoTime();
         
-        String odeFolderPath = args[0];
-        String mapPath = args[1];
+        final String odeFolderPath = args[0];
+        final String mapPath = args[1];
         try {
             @SuppressWarnings("unused")
-            ObjectDataExtractor ode = new ObjectDataExtractor(odeFolderPath, mapPath);
+            final ObjectDataExtractor ode = new ObjectDataExtractor(odeFolderPath, mapPath);
             
             Log.info("Finished. Took {} ms", (System.nanoTime() - startTime) / 1_000_000d);
-        } catch (Exception ex) {
-            StringWriter result = new StringWriter();
+        } catch (final Exception ex) {
+            final StringWriter result = new StringWriter();
             final PrintWriter printWriter = new PrintWriter(result);
             ex.printStackTrace(printWriter);
             javax.swing.JOptionPane.showMessageDialog(null, "Error in Object Data Exporter:\n" + result.toString());

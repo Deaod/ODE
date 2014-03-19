@@ -25,15 +25,15 @@ class UnitDataExtractor extends Extractor<W3UFile, Unit> {
      * This is a field ID defined by Blizzard, but we need to load this property for every unit to restrict loading
      * default units to certain races.
      */
-    private static final int                       FIELD_ID_RACE         = CharInt.toInt("urac");
+    private static final int                             FIELD_ID_RACE         = CharInt.toInt("urac");
     /**
      * This is a field ID thats not used by Blizzard for anything, so we are using it to mark units that are loaded
      * without having been modified.
      */
-    private static final int                       FIELD_ID_DEFAULT_UNIT = CharInt.toInt("defu");
-    private static final int                       COLUMN_UNIT_RACE      = 3;
+    private static final int                             FIELD_ID_DEFAULT_UNIT = CharInt.toInt("defu");
+    private static final int                             COLUMN_UNIT_RACE      = 3;
     
-    private Hashtable<String, Metadata<UnitField>> metadata              = new Hashtable<>();
+    private final Hashtable<String, Metadata<UnitField>> metadata              = new Hashtable<>();
     
     @Override
     protected String getCommandString() {
@@ -51,29 +51,29 @@ class UnitDataExtractor extends Extractor<W3UFile, Unit> {
     }
     
     @Override
-    protected Field createField(Integer id, String name) {
+    protected Field createField(final Integer id, final String name) {
         return new UnitField(id, name);
     }
     
     @Override
-    protected LoadRequest createLoadRequest(String loadRequestLine) {
+    protected LoadRequest createLoadRequest(final String loadRequestLine) {
         return new UnitLoadRequest(loadRequestLine.split("\\s+"));
     }
     
     @Override
-    protected FieldRequest createFieldRequest(Field field, LoadRequest request) {
+    protected FieldRequest createFieldRequest(final Field field, final LoadRequest request) {
         return new UnitFieldRequest((UnitField) field, (UnitLoadRequest) request);
     }
     
     private class UnitField extends Field {
         
-        public UnitField(Integer id, String name) {
+        public UnitField(final Integer id, final String name) {
             super(id, name);
         }
         
         @Override
         public StringBuilder generateLoadFunction() {
-            StringBuilder code = new StringBuilder();
+            final StringBuilder code = new StringBuilder();
             
             code.append(Jass.function("GetUnitType" + getName(), getType().getJassType(), new Parameter(
                     Type.INTEGER,
@@ -85,7 +85,7 @@ class UnitDataExtractor extends Extractor<W3UFile, Unit> {
         }
         
         @Override
-        public String generateSaveFunctionCall(Unit object, Property<Unit> property) {
+        public String generateSaveFunctionCall(final Unit object, final Property<Unit> property) {
             return generateSaveFunctionCall(
                     "'" + CharInt.toString(object.getId()) + "'",
                     Integer.toString(getIndex()),
@@ -101,17 +101,17 @@ class UnitDataExtractor extends Extractor<W3UFile, Unit> {
         private Set<Integer> unitIdsToLoad   = new HashSet<Integer>();
         
         @Override
-        public void absorb(LoadRequest request) {
+        public void absorb(final LoadRequest request) {
             super.absorb(request);
             
-            UnitLoadRequest req = (UnitLoadRequest) request;
+            final UnitLoadRequest req = (UnitLoadRequest) request;
             
             restrictToRaces = restrictToRaces && req.isRestrictedToRaces();
             racesToLoad.addAll(req.getRaces());
             unitIdsToLoad.addAll(req.getUnitIdsToLoad());
         }
         
-        public UnitFieldRequest(UnitField field, UnitLoadRequest request) {
+        public UnitFieldRequest(final UnitField field, final UnitLoadRequest request) {
             super(field, request);
             
             restrictToRaces = request.isRestrictedToRaces();
@@ -120,12 +120,12 @@ class UnitDataExtractor extends Extractor<W3UFile, Unit> {
         }
         
         @Override
-        protected boolean canLoad(Unit object) {
+        protected boolean canLoad(final Unit object) {
             if (object.getPropertyEx(FIELD_ID_DEFAULT_UNIT) == null) {
                 return true;
             } else if (isLoadDefaults()) {
                 if (restrictToRaces) {
-                    Property<Unit> property = object.getProperty(FIELD_ID_RACE);
+                    final Property<Unit> property = object.getProperty(FIELD_ID_RACE);
                     return (property != null && racesToLoad.contains(property.getValue()))
                             || (unitIdsToLoad.contains(object.getId()));
                 } else {
@@ -138,24 +138,24 @@ class UnitDataExtractor extends Extractor<W3UFile, Unit> {
     }
     
     private class UnitLoadRequest extends LoadRequest {
-        private boolean      restrictToRaces = false;
+        private boolean            restrictToRaces = false;
         
-        private Set<String>  racesToLoad     = new HashSet<String>();
-        private Set<Integer> unitIdsToLoad   = new HashSet<Integer>();
+        private final Set<String>  racesToLoad     = new HashSet<String>();
+        private final Set<Integer> unitIdsToLoad   = new HashSet<Integer>();
         
-        public UnitLoadRequest(String[] words) {
+        public UnitLoadRequest(final String[] words) {
             super(words);
             
-            for (String word : words) {
+            for (final String word : words) {
                 if (word.toLowerCase().startsWith("races=")) {
                     restrictToRaces = true;
-                    String racestrs[] = word.substring(6).split(",");
-                    for (String s : racestrs) {
+                    final String racestrs[] = word.substring(6).split(",");
+                    for (final String s : racestrs) {
                         racesToLoad.add(s);
                     }
                 } else if (word.toLowerCase().startsWith("rawcodes=")) {
-                    String idstrs[] = word.substring(9).split(",");
-                    for (String s : idstrs) {
+                    final String idstrs[] = word.substring(9).split(",");
+                    for (final String s : idstrs) {
                         unitIdsToLoad.add(CharInt.toInt(s));
                     }
                 }
@@ -177,15 +177,15 @@ class UnitDataExtractor extends Extractor<W3UFile, Unit> {
     
     @Override
     protected void loadMetadata() throws IOException {
-        SLKFile slk = new SLKFile(new File(getMetaPath(), "UnitMetaData.slk"));
+        final SLKFile slk = new SLKFile(new File(getMetaPath(), "UnitMetaData.slk"));
         for (int row = 1; row < slk.getHeight(); row += 1) {
-            String fieldID = slk.getCell(0, row).toString();
-            String name = slk.getCell(1, row).toString();
-            String slkName = slk.getCell(2, row).toString();
-            String index = slk.getCell(3, row).toString();
-            String type = slk.getCell(7, row).toString();
+            final String fieldID = slk.getCell(0, row).toString();
+            final String name = slk.getCell(1, row).toString();
+            final String slkName = slk.getCell(2, row).toString();
+            final String index = slk.getCell(3, row).toString();
+            final String type = slk.getCell(7, row).toString();
             
-            UnitField f = (UnitField) getField(CharInt.toInt(fieldID));
+            final UnitField f = (UnitField) getField(CharInt.toInt(fieldID));
             
             if (f != null) {
                 removeFromInvalidFields(f);
@@ -211,11 +211,11 @@ class UnitDataExtractor extends Extractor<W3UFile, Unit> {
     }
     
     @Override
-    protected void loadSLK(File file) throws IOException {
-        SLKFile slk = new SLKFile(file);
+    protected void loadSLK(final File file) throws IOException {
+        final SLKFile slk = new SLKFile(file);
         
         // get the name of the SLK file without its extension
-        Metadata<UnitField> data = metadata.get(file.getName().substring(0, file.getName().lastIndexOf('.')));
+        final Metadata<UnitField> data = metadata.get(file.getName().substring(0, file.getName().lastIndexOf('.')));
         
         if (data == null) {
             return;
@@ -224,14 +224,14 @@ class UnitDataExtractor extends Extractor<W3UFile, Unit> {
         // Decide which values need to be loaded from the SLKs,
         // as we are only interested in the ones the map requests us to load.
         //
-        ArrayList<List<UnitField>> columnFields = new ArrayList<List<UnitField>>(slk.getWidth());
+        final ArrayList<List<UnitField>> columnFields = new ArrayList<List<UnitField>>(slk.getWidth());
         for (int i = 0; i < slk.getWidth(); i += 1) {
             columnFields.add(null);
         }
         
-        Object[] firstRow = slk.getRow(0);
+        final Object[] firstRow = slk.getRow(0);
         for (int i = 1; i < firstRow.length; i += 1) { // skip the first column (i=0)
-            Object cell = firstRow[i];
+            final Object cell = firstRow[i];
             if (cell != null) {
                 columnFields.set(i, data.getFields(cell.toString()));
             }
@@ -240,9 +240,9 @@ class UnitDataExtractor extends Extractor<W3UFile, Unit> {
         // Now load those that were requested
         //
         for (int i = 1; i < slk.getHeight(); i += 1) {
-            Object[] row = slk.getRow(i);
+            final Object[] row = slk.getRow(i);
             
-            Unit unit = getObject(CharInt.toInt(row[0].toString()));
+            final Unit unit = getObject(CharInt.toInt(row[0].toString()));
             if (unit == null) {
                 continue;
             }
@@ -251,15 +251,15 @@ class UnitDataExtractor extends Extractor<W3UFile, Unit> {
                 // Column headings might refer to multiple fields (identified uniquely by their field IDs)
                 // Example: Buttonpos refers to ubpx and ubpy, in that order. Values are separated by commas.
                 
-                List<UnitField> fields = columnFields.get(column);
+                final List<UnitField> fields = columnFields.get(column);
                 if (fields == null) {
                     continue;
                 }
                 
-                String columnHeading = slk.getCell(column, 0).toString();
-                Object value = row[column];
+                final String columnHeading = slk.getCell(column, 0).toString();
+                final Object value = row[column];
                 
-                for (UnitField f : fields) {
+                for (final UnitField f : fields) {
                     if (value == null) {
                         unit.addProperty(new Property<Unit>(
                                 f.getId(),
@@ -277,10 +277,10 @@ class UnitDataExtractor extends Extractor<W3UFile, Unit> {
     }
     
     @Override
-    protected void loadProfile(File profile) throws IOException {
-        Metadata<UnitField> data = metadata.get("Profile");
+    protected void loadProfile(final File profile) throws IOException {
+        final Metadata<UnitField> data = metadata.get("Profile");
         
-        BufferedReader br = new BufferedReader(new FileReader(profile));
+        final BufferedReader br = new BufferedReader(new FileReader(profile));
         boolean inBlock = false;
         Unit unit = null;
         for (String line = br.readLine(); line != null; line = br.readLine()) {
@@ -293,16 +293,16 @@ class UnitDataExtractor extends Extractor<W3UFile, Unit> {
                 unit = getObject(CharInt.toInt(line.substring(1, 5)));
                 inBlock = unit != null; // verify if its a valid entry
             } else if (inBlock) { // only proceed if the units valid, we dont want entries for invalid units
-                String[] lineParts = line.split("=", 2);
+                final String[] lineParts = line.split("=", 2);
                 
                 // Column headings might refer to multiple fields (identified uniquely by their field IDs)
                 // Example: Buttonpos refers to ubpx and ubpy, in that order. Values are separated by commas.
-                List<UnitField> fields = data.getFields(lineParts[0]);
+                final List<UnitField> fields = data.getFields(lineParts[0]);
                 if (fields == null) {
                     continue;
                 }
                 
-                for (UnitField f : fields) {
+                for (final UnitField f : fields) {
                     unit.addProperty(new Property<Unit>(f.getId(), f.getType().getPropertyType(), data.extractValue(
                             lineParts[0],
                             f,
@@ -316,19 +316,19 @@ class UnitDataExtractor extends Extractor<W3UFile, Unit> {
     
     @Override
     protected void loadDefaultObjects() throws IOException {
-        File fi = new File(getDataPath(), "UnitData.slk");
+        final File fi = new File(getDataPath(), "UnitData.slk");
         
-        SLKFile slk = new SLKFile(fi);
+        final SLKFile slk = new SLKFile(fi);
         
         // start at index one to skip column headings
         for (int i = 1; i < slk.getHeight(); i += 1) {
-            Object[] row = slk.getRow(i);
+            final Object[] row = slk.getRow(i);
             
-            int id = CharInt.toInt(row[0].toString());
-            String race = row[COLUMN_UNIT_RACE].toString();
+            final int id = CharInt.toInt(row[0].toString());
+            final String race = row[COLUMN_UNIT_RACE].toString();
             
             if (getObject(id) == null) {
-                Unit unit = new Unit(id);
+                final Unit unit = new Unit(id);
                 unit.addProperty(new Property<Unit>(FIELD_ID_DEFAULT_UNIT, PropertyType.BOOLEAN, true));
                 unit.addProperty(new Property<Unit>(FIELD_ID_RACE, PropertyType.STRING, race));
                 addObject(unit);
@@ -336,7 +336,7 @@ class UnitDataExtractor extends Extractor<W3UFile, Unit> {
         }
     }
     
-    UnitDataExtractor(File odeFolder, W3UFile w3uFile) throws IOException {
+    UnitDataExtractor(final File odeFolder, final W3UFile w3uFile) throws IOException {
         super(odeFolder, w3uFile);
     }
     

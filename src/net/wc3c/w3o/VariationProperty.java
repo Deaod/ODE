@@ -28,16 +28,16 @@ public class VariationProperty<T extends W3Object<?>> extends Property<T> {
         return generateKey(this);
     }
     
-    protected void setVariation(int variation) {
+    protected void setVariation(final int variation) {
         this.variation = variation;
     }
     
-    protected void setDataPointer(int dataPointer) {
+    protected void setDataPointer(final int dataPointer) {
         this.dataPointer = dataPointer;
     }
     
     @Override
-    protected void readFrom(BufferedDataChannel dc) throws IOException {
+    protected void readFrom(final BufferedDataChannel dc) throws IOException {
         setFieldId(dc.readIntBE());
         setVariation(dc.readInt());
         setDataPointer(dc.readInt());
@@ -58,7 +58,7 @@ public class VariationProperty<T extends W3Object<?>> extends Property<T> {
             
             case STRING:
             default: {
-                String value = dc.readUTF8String();
+                final String value = dc.readUTF8String();
                 
                 if (getContext().getContext().getTriggerStrings() != null && value.startsWith("TRIGSTR_")) {
                     setValue(getContext().getContext().getTriggerStrings().get(Integer.parseInt(value.substring(8))));
@@ -72,7 +72,7 @@ public class VariationProperty<T extends W3Object<?>> extends Property<T> {
         setEnd(dc.readInt());
     }
     
-    VariationProperty(BufferedDataChannel dc, T context) throws IOException {
+    VariationProperty(final BufferedDataChannel dc, final T context) throws IOException {
         super(dc, context);
     }
     
@@ -82,7 +82,7 @@ public class VariationProperty<T extends W3Object<?>> extends Property<T> {
      * @param type
      * @param value
      */
-    public VariationProperty(int fieldId, PropertyType type, Object value) {
+    public VariationProperty(final int fieldId, final PropertyType type, final Object value) {
         super(fieldId, type, value);
         this.variation = 0;
     }
@@ -94,7 +94,7 @@ public class VariationProperty<T extends W3Object<?>> extends Property<T> {
      * @param value
      * @param context
      */
-    public VariationProperty(int fieldId, PropertyType type, Object value, T context) {
+    public VariationProperty(final int fieldId, final PropertyType type, final Object value, final T context) {
         super(fieldId, type, value, context);
         this.variation = 0;
     }
@@ -106,7 +106,7 @@ public class VariationProperty<T extends W3Object<?>> extends Property<T> {
      * @param variation
      * @param value
      */
-    public VariationProperty(int fieldId, PropertyType type, int variation, Object value) {
+    public VariationProperty(final int fieldId, final PropertyType type, final int variation, final Object value) {
         super(fieldId, type, value);
         this.variation = variation;
     }
@@ -119,7 +119,8 @@ public class VariationProperty<T extends W3Object<?>> extends Property<T> {
      * @param value
      * @param context
      */
-    public VariationProperty(int fieldId, PropertyType type, int variation, Object value, T context) {
+    public VariationProperty(final int fieldId, final PropertyType type, final int variation, final Object value,
+            final T context) {
         super(fieldId, type, value, context);
         this.variation = variation;
     }
@@ -129,7 +130,7 @@ public class VariationProperty<T extends W3Object<?>> extends Property<T> {
      * @param property
      * @return
      */
-    public static Long generateKey(VariationProperty<?> property) {
+    public static Long generateKey(final VariationProperty<?> property) {
         return generateKey(property.getFieldId(), property.getVariation());
     }
     
@@ -139,7 +140,7 @@ public class VariationProperty<T extends W3Object<?>> extends Property<T> {
      * @param variation
      * @return
      */
-    public static Long generateKey(int fieldId, int variation) {
+    public static Long generateKey(final int fieldId, final int variation) {
         long key = fieldId;
         key <<= 16;
         key |= (0x0000FFFF & variation);

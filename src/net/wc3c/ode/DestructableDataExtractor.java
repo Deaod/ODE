@@ -20,25 +20,25 @@ import net.wc3c.w3o.W3BFile.Destructable;
 
 public class DestructableDataExtractor extends Extractor<W3BFile, Destructable> {
     
-    private static final int                               FIELD_ID_DEFAULT_DESTRUCTABLE = CharInt.toInt("defb");
-    private static final int                               FIELD_ID_CATEGORY             = CharInt.toInt("bcat");
-    private static final int                               COLUMN_DESTRUCTABLE_CATEGORY  = 1;
+    private static final int                                     FIELD_ID_DEFAULT_DESTRUCTABLE = CharInt.toInt("defb");
+    private static final int                                     FIELD_ID_CATEGORY             = CharInt.toInt("bcat");
+    private static final int                                     COLUMN_DESTRUCTABLE_CATEGORY  = 1;
     
-    private Hashtable<String, Metadata<DestructableField>> metadata                      = new Hashtable<>();
+    private final Hashtable<String, Metadata<DestructableField>> metadata                      = new Hashtable<>();
     
-    protected DestructableDataExtractor(File enclosingFolder, W3BFile objectData) throws IOException {
+    protected DestructableDataExtractor(final File enclosingFolder, final W3BFile objectData) throws IOException {
         super(enclosingFolder, objectData);
     }
     
     private class DestructableField extends Field {
         
-        public DestructableField(Integer id, String name) {
+        public DestructableField(final Integer id, final String name) {
             super(id, name);
         }
         
         @Override
         public StringBuilder generateLoadFunction() {
-            StringBuilder out = new StringBuilder();
+            final StringBuilder out = new StringBuilder();
             
             out.append(Jass.function("GetDestructableType" + getName(), getType().getJassType(), new Parameter(
                     Type.INTEGER,
@@ -50,7 +50,7 @@ public class DestructableDataExtractor extends Extractor<W3BFile, Destructable> 
         }
         
         @Override
-        public String generateSaveFunctionCall(Destructable object, Property<Destructable> property) {
+        public String generateSaveFunctionCall(final Destructable object, final Property<Destructable> property) {
             return generateSaveFunctionCall(
                     "'" + CharInt.toString(object.getId()) + "'",
                     Integer.toString(getIndex()),
@@ -60,12 +60,12 @@ public class DestructableDataExtractor extends Extractor<W3BFile, Destructable> 
     }
     
     private class DestructableFieldRequest extends FieldRequest {
-        private boolean      restrictToCategories;
+        private boolean            restrictToCategories;
         
-        private Set<String>  categories;
-        private Set<Integer> destructableIdsToLoad;
+        private final Set<String>  categories;
+        private final Set<Integer> destructableIdsToLoad;
         
-        public DestructableFieldRequest(DestructableField field, DestructableLoadRequest request) {
+        public DestructableFieldRequest(final DestructableField field, final DestructableLoadRequest request) {
             super(field, request);
             
             restrictToCategories = request.isRestrictedToCategories();
@@ -74,10 +74,10 @@ public class DestructableDataExtractor extends Extractor<W3BFile, Destructable> 
         }
         
         @Override
-        public void absorb(LoadRequest request) {
+        public void absorb(final LoadRequest request) {
             super.absorb(request);
             
-            DestructableLoadRequest req = (DestructableLoadRequest) request;
+            final DestructableLoadRequest req = (DestructableLoadRequest) request;
             
             restrictToCategories = restrictToCategories && req.isRestrictedToCategories();
             categories.addAll(req.getCategories());
@@ -85,12 +85,12 @@ public class DestructableDataExtractor extends Extractor<W3BFile, Destructable> 
         }
         
         @Override
-        protected boolean canLoad(Destructable object) {
+        protected boolean canLoad(final Destructable object) {
             boolean load = false;
             
             if (isLoadDefaults()) {
                 if (restrictToCategories) {
-                    Property<Destructable> property = object.getProperty(FIELD_ID_CATEGORY);
+                    final Property<Destructable> property = object.getProperty(FIELD_ID_CATEGORY);
                     if (property != null && categories.contains(property.getValue())) {
                         load = true;
                     } else if (destructableIdsToLoad.contains(object.getId())) {
@@ -112,24 +112,24 @@ public class DestructableDataExtractor extends Extractor<W3BFile, Destructable> 
     }
     
     private class DestructableLoadRequest extends LoadRequest {
-        private boolean      restrictToCategories  = false;
+        private boolean            restrictToCategories  = false;
         
-        private Set<String>  categories            = new HashSet<String>();
-        private Set<Integer> destructableIdsToLoad = new HashSet<Integer>();
+        private final Set<String>  categories            = new HashSet<String>();
+        private final Set<Integer> destructableIdsToLoad = new HashSet<Integer>();
         
-        public DestructableLoadRequest(String[] words) {
+        public DestructableLoadRequest(final String[] words) {
             super(words);
             
-            for (String word : words) {
+            for (final String word : words) {
                 if (word.toLowerCase().startsWith("categories=")) {
                     restrictToCategories = true;
-                    String[] classes = word.substring(11).split(",");
-                    for (String cls : classes) {
+                    final String[] classes = word.substring(11).split(",");
+                    for (final String cls : classes) {
                         categories.add(cls);
                     }
                 } else if (word.toLowerCase().startsWith("rawcodes=")) {
-                    String[] rawcodes = word.substring(9).split(",");
-                    for (String rawcode : rawcodes) {
+                    final String[] rawcodes = word.substring(9).split(",");
+                    for (final String rawcode : rawcodes) {
                         destructableIdsToLoad.add(CharInt.toInt(rawcode));
                     }
                 }
@@ -150,17 +150,17 @@ public class DestructableDataExtractor extends Extractor<W3BFile, Destructable> 
     }
     
     @Override
-    protected Field createField(Integer id, String name) {
+    protected Field createField(final Integer id, final String name) {
         return new DestructableField(id, name);
     }
     
     @Override
-    protected LoadRequest createLoadRequest(String loadRequestLine) {
+    protected LoadRequest createLoadRequest(final String loadRequestLine) {
         return new DestructableLoadRequest(loadRequestLine.split("\\s+"));
     }
     
     @Override
-    protected FieldRequest createFieldRequest(Field field, LoadRequest request) {
+    protected FieldRequest createFieldRequest(final Field field, final LoadRequest request) {
         return new DestructableFieldRequest((DestructableField) field, (DestructableLoadRequest) request);
     }
     
@@ -181,16 +181,16 @@ public class DestructableDataExtractor extends Extractor<W3BFile, Destructable> 
     
     @Override
     protected void loadMetadata() throws IOException {
-        SLKFile slk = new SLKFile(new File(getMetaPath(), "DestructableMetaData.slk"));
+        final SLKFile slk = new SLKFile(new File(getMetaPath(), "DestructableMetaData.slk"));
         
         for (int row = 1; row < slk.getHeight(); row += 1) {
-            String fieldID = slk.getCell(0, row).toString();
-            String name = slk.getCell(1, row).toString();
-            String slkName = slk.getCell(2, row).toString();
-            String index = slk.getCell(3, row).toString();
-            String type = slk.getCell(7, row).toString();
+            final String fieldID = slk.getCell(0, row).toString();
+            final String name = slk.getCell(1, row).toString();
+            final String slkName = slk.getCell(2, row).toString();
+            final String index = slk.getCell(3, row).toString();
+            final String type = slk.getCell(7, row).toString();
             
-            DestructableField f = (DestructableField) getField(CharInt.toInt(fieldID));
+            final DestructableField f = (DestructableField) getField(CharInt.toInt(fieldID));
             
             if (f != null) {
                 removeFromInvalidFields(f);
@@ -217,15 +217,15 @@ public class DestructableDataExtractor extends Extractor<W3BFile, Destructable> 
     
     @Override
     protected void loadDefaultObjects() throws IOException {
-        SLKFile slk = new SLKFile(new File(getDataPath(), "DestructableData.slk"));
+        final SLKFile slk = new SLKFile(new File(getDataPath(), "DestructableData.slk"));
         for (int i = 1; i < slk.getHeight(); i += 1) {
-            Object[] row = slk.getRow(i);
+            final Object[] row = slk.getRow(i);
             
-            int id = CharInt.toInt(row[0].toString());
-            String cls = row[COLUMN_DESTRUCTABLE_CATEGORY].toString();
+            final int id = CharInt.toInt(row[0].toString());
+            final String cls = row[COLUMN_DESTRUCTABLE_CATEGORY].toString();
             
             if (getObject(id) == null) {
-                Destructable destructable = new Destructable(id);
+                final Destructable destructable = new Destructable(id);
                 destructable.addProperty(new Property<Destructable>(
                         FIELD_ID_DEFAULT_DESTRUCTABLE,
                         PropertyType.BOOLEAN,
@@ -237,15 +237,17 @@ public class DestructableDataExtractor extends Extractor<W3BFile, Destructable> 
     }
     
     @Override
-    protected void loadProfile(File file) throws IOException {
+    protected void loadProfile(final File file) throws IOException {
         // Destructables don't make use of Profiles.
         // Don't do anything.
     }
     
     @Override
-    protected void loadSLK(File file) throws IOException {
-        SLKFile slk = new SLKFile(file);
-        Metadata<DestructableField> data = metadata.get(file.getName().substring(0, file.getName().lastIndexOf('.')));
+    protected void loadSLK(final File file) throws IOException {
+        final SLKFile slk = new SLKFile(file);
+        final Metadata<DestructableField> data = metadata.get(file.getName().substring(
+                0,
+                file.getName().lastIndexOf('.')));
         
         if (data == null) {
             return;
@@ -254,14 +256,14 @@ public class DestructableDataExtractor extends Extractor<W3BFile, Destructable> 
         // Decide which values need to be loaded from the SLKs,
         // as we are only interested in the ones the map requests us to load.
         //
-        ArrayList<List<DestructableField>> columnFields = new ArrayList<List<DestructableField>>(slk.getWidth());
+        final ArrayList<List<DestructableField>> columnFields = new ArrayList<List<DestructableField>>(slk.getWidth());
         for (int i = 0; i < slk.getWidth(); i += 1) {
             columnFields.add(null);
         }
         
-        Object[] firstRow = slk.getRow(0);
+        final Object[] firstRow = slk.getRow(0);
         for (int i = 1; i < firstRow.length; i += 1) { // skip the first column (i=0)
-            Object cell = firstRow[i];
+            final Object cell = firstRow[i];
             if (cell != null) {
                 columnFields.set(i, data.getFields(cell.toString()));
             }
@@ -270,9 +272,9 @@ public class DestructableDataExtractor extends Extractor<W3BFile, Destructable> 
         // Now load those that were requested
         //
         for (int i = 1; i < slk.getHeight(); i += 1) {
-            Object[] row = slk.getRow(i);
+            final Object[] row = slk.getRow(i);
             
-            Destructable destructable = getObject(CharInt.toInt(row[0].toString()));
+            final Destructable destructable = getObject(CharInt.toInt(row[0].toString()));
             if (destructable == null) {
                 continue;
             }
@@ -281,15 +283,15 @@ public class DestructableDataExtractor extends Extractor<W3BFile, Destructable> 
                 // Column headings might refer to multiple fields (identified uniquely by their field IDs)
                 // Example: Buttonpos refers to ubpx and ubpy, in that order. Values are separated by commas.
                 
-                List<DestructableField> fields = columnFields.get(column);
+                final List<DestructableField> fields = columnFields.get(column);
                 if (fields == null) {
                     continue;
                 }
                 
-                String columnHeading = slk.getCell(column, 0).toString();
-                Object value = row[column];
+                final String columnHeading = slk.getCell(column, 0).toString();
+                final Object value = row[column];
                 
-                for (DestructableField f : fields) {
+                for (final DestructableField f : fields) {
                     if (value == null) {
                         destructable.addProperty(new Property<Destructable>(
                                 f.getId(),

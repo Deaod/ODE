@@ -33,7 +33,7 @@ public final class BufferedDataChannel {
     public BufferedDataChannel(final ByteChannel channel, final int bufferSize, final ByteOrder order)
             throws IOException {
         this.channel = channel;
-        buffer = ByteBuffer.allocateDirect(bufferSize);
+        buffer = ByteBuffer.allocate(bufferSize);
         this.order = order;
         
         buffer.clear();
@@ -192,14 +192,8 @@ public final class BufferedDataChannel {
      */
     public final long readLongLE() throws IOException {
         long result = 0;
-        result |= ((long) readByte() << 0L) & 0x00000000000000FFL;
-        result |= ((long) readByte() << 8L) & 0x000000000000FF00L;
-        result |= ((long) readByte() << 16L) & 0x0000000000FF0000L;
-        result |= ((long) readByte() << 24L) & 0x00000000FF000000L;
-        result |= ((long) readByte() << 32L) & 0x000000FF00000000L;
-        result |= ((long) readByte() << 40L) & 0x0000FF0000000000L;
-        result |= ((long) readByte() << 48L) & 0x00FF000000000000L;
-        result |= ((long) readByte() << 56L) & 0xFF00000000000000L;
+        result |= ((long) readIntLE() << 0L) & 0x00000000FFFFFFFFL;
+        result |= ((long) readIntLE() << 32L) & 0xFFFFFFFF00000000L;
         return result;
     }
     
@@ -213,14 +207,8 @@ public final class BufferedDataChannel {
      */
     public final long readLongBE() throws IOException {
         long result = 0;
-        result |= ((long) readByte() << 56L) & 0xFF00000000000000L;
-        result |= ((long) readByte() << 48L) & 0x00FF000000000000L;
-        result |= ((long) readByte() << 40L) & 0x0000FF0000000000L;
-        result |= ((long) readByte() << 32L) & 0x000000FF00000000L;
-        result |= ((long) readByte() << 24L) & 0x00000000FF000000L;
-        result |= ((long) readByte() << 16L) & 0x0000000000FF0000L;
-        result |= ((long) readByte() << 8L) & 0x000000000000FF00L;
-        result |= ((long) readByte() << 0L) & 0x00000000000000FFL;
+        result |= ((long) readIntBE() << 32L) & 0xFFFFFFFF00000000L;
+        result |= ((long) readIntBE() << 0L) & 0x00000000FFFFFFFFL;
         return result;
     }
     

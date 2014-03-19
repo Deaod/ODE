@@ -9,23 +9,23 @@ import net.wc3c.w3o.W3TFile.Item;
 import net.wc3c.wts.WTSFile;
 
 public class W3TFile extends W3OBase<Item> {
-    public W3TFile(Path source, WTSFile trigStrs) throws IOException {
+    public W3TFile(final Path source, final WTSFile trigStrs) throws IOException {
         super(source, trigStrs);
     }
     
-    public W3TFile(String sourcePath, WTSFile trigStrs) throws IOException {
+    public W3TFile(final String sourcePath, final WTSFile trigStrs) throws IOException {
         super(sourcePath, trigStrs);
     }
     
-    public W3TFile(Path source) throws IOException {
+    public W3TFile(final Path source) throws IOException {
         super(source);
     }
     
-    public W3TFile(String sourcePath) throws IOException {
+    public W3TFile(final String sourcePath) throws IOException {
         super(sourcePath);
     }
     
-    public W3TFile(WTSFile trigStrs) {
+    public W3TFile(final WTSFile trigStrs) {
         super(trigStrs);
     }
     
@@ -42,41 +42,41 @@ public class W3TFile extends W3OBase<Item> {
         return getEntries();
     }
     
-    public void addItem(Item item) {
+    public void addItem(final Item item) {
         item.setContext(this);
         addEntry(item);
     }
     
-    public Item getItem(int itemId) {
+    public Item getItem(final int itemId) {
         return getEntry(itemId);
     }
     
     @Override
-    protected Item readEntry(BufferedDataChannel dc) throws IOException {
+    protected Item readEntry(final BufferedDataChannel dc) throws IOException {
         return new Item(dc, this);
     }
     
     public static class Item extends W3Object<W3TFile> {
         @Override
-        protected Property<?> readProperty(BufferedDataChannel dc) throws IOException {
+        protected Property<?> readProperty(final BufferedDataChannel dc) throws IOException {
             return new Property<Item>(dc, this);
         }
         
         @SuppressWarnings("unchecked")
-        public Property<Item> getProperty(int fieldId) {
+        public Property<Item> getProperty(final int fieldId) {
             return (Property<Item>) super.getProperty(Property.generateKey(fieldId));
         }
         
         @SuppressWarnings("unchecked")
-        public Property<Item> getPropertyEx(int fieldId) {
+        public Property<Item> getPropertyEx(final int fieldId) {
             return (Property<Item>) super.getPropertyEx(Property.generateKey(fieldId));
         }
         
-        public boolean hasProperty(int fieldId) {
+        public boolean hasProperty(final int fieldId) {
             return super.hasProperty(Property.generateKey(fieldId));
         }
         
-        public void addProperty(Property<Item> property) {
+        public void addProperty(final Property<Item> property) {
             if (hasProperty(property.getFieldId())) {
                 return;
             }
@@ -85,15 +85,15 @@ public class W3TFile extends W3OBase<Item> {
             putProperty(property.generateKey(), property);
         }
         
-        Item(BufferedDataChannel dc, W3TFile context) throws IOException {
+        Item(final BufferedDataChannel dc, final W3TFile context) throws IOException {
             super(dc, context);
         }
         
-        public Item(int parentId, int id) {
+        public Item(final int parentId, final int id) {
             super(parentId, id);
         }
         
-        public Item(int id) {
+        public Item(final int id) {
             super(id);
         }
     }

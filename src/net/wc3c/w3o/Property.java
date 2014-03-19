@@ -30,7 +30,7 @@ public class Property<T extends W3Object<?>> implements W3OContext<T> {
      * @param context the new context of this property.
      */
     @Override
-    public void setContext(T context) {
+    public void setContext(final T context) {
         this.context = context;
     }
     
@@ -70,23 +70,23 @@ public class Property<T extends W3Object<?>> implements W3OContext<T> {
         return generateKey(this);
     }
     
-    protected void setFieldId(int fieldId) {
+    protected void setFieldId(final int fieldId) {
         this.fieldId = fieldId;
     }
     
-    protected void setType(PropertyType type) {
+    protected void setType(final PropertyType type) {
         this.type = type;
     }
     
-    protected void setValue(Object value) {
+    protected void setValue(final Object value) {
         this.value = value;
     }
     
-    protected void setEnd(int end) {
+    protected void setEnd(final int end) {
         this.end = end;
     }
     
-    protected void readFrom(BufferedDataChannel dc) throws IOException {
+    protected void readFrom(final BufferedDataChannel dc) throws IOException {
         setFieldId(dc.readIntBE());
         setType(PropertyType.fromInt(dc.readInt()));
         switch (getType()) {
@@ -105,7 +105,7 @@ public class Property<T extends W3Object<?>> implements W3OContext<T> {
             
             case STRING:
             default: {
-                String value = dc.readUTF8String();
+                final String value = dc.readUTF8String();
                 
                 if (getContext().getContext().getTriggerStrings() != null && value.startsWith("TRIGSTR_")) {
                     setValue(getContext().getContext().getTriggerStrings().get(Integer.parseInt(value.substring(8))));
@@ -119,7 +119,7 @@ public class Property<T extends W3Object<?>> implements W3OContext<T> {
         setEnd(dc.readInt());
     }
     
-    Property(BufferedDataChannel dc, T context) throws IOException {
+    Property(final BufferedDataChannel dc, final T context) throws IOException {
         this.context = context;
         readFrom(dc);
     }
@@ -131,7 +131,7 @@ public class Property<T extends W3Object<?>> implements W3OContext<T> {
      * @param type type information for the value.
      * @param value value of this property.
      */
-    public Property(int fieldId, PropertyType type, Object value) {
+    public Property(final int fieldId, final PropertyType type, final Object value) {
         this.fieldId = fieldId;
         this.type = type;
         this.value = value;
@@ -145,7 +145,7 @@ public class Property<T extends W3Object<?>> implements W3OContext<T> {
      * @param value value of this property.
      * @param context context for this property.
      */
-    public Property(int fieldId, PropertyType type, Object value, T context) {
+    public Property(final int fieldId, final PropertyType type, final Object value, final T context) {
         this.fieldId = fieldId;
         this.type = type;
         this.value = value;
@@ -158,7 +158,7 @@ public class Property<T extends W3Object<?>> implements W3OContext<T> {
      * @param property the property for which a key should be generated.
      * @return the property's ID wrapped in a {@link Long}.
      */
-    public static Long generateKey(Property<?> property) {
+    public static Long generateKey(final Property<?> property) {
         return generateKey(property.getFieldId());
     }
     
@@ -168,7 +168,7 @@ public class Property<T extends W3Object<?>> implements W3OContext<T> {
      * @param fieldId ID of a property.
      * @return the ID wrapped in a {@link Long}.
      */
-    public static Long generateKey(int fieldId) {
+    public static Long generateKey(final int fieldId) {
         return (long) fieldId;
     }
 }

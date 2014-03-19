@@ -22,21 +22,21 @@ import net.wc3c.w3o.W3TFile.Item;
 
 class ItemDataExtractor extends Extractor<W3TFile, Item> {
     
-    private static final int                       FIELD_ID_DEFAULT_ITEM = CharInt.toInt("defi");
-    private static final int                       FIELD_ID_CLASS        = CharInt.toInt("icla");
-    private static final int                       COLUMN_ITEM_CLASS     = 4;
+    private static final int                             FIELD_ID_DEFAULT_ITEM = CharInt.toInt("defi");
+    private static final int                             FIELD_ID_CLASS        = CharInt.toInt("icla");
+    private static final int                             COLUMN_ITEM_CLASS     = 4;
     
-    private Hashtable<String, Metadata<ItemField>> metadata              = new Hashtable<>();
+    private final Hashtable<String, Metadata<ItemField>> metadata              = new Hashtable<>();
     
     private class ItemField extends Field {
         
-        public ItemField(Integer id, String name) {
+        public ItemField(final Integer id, final String name) {
             super(id, name);
         }
         
         @Override
         public StringBuilder generateLoadFunction() {
-            StringBuilder out = new StringBuilder();
+            final StringBuilder out = new StringBuilder();
             
             out.append(Jass.function("GetItemType" + getName(), getType().getJassType(), new Parameter(
                     Type.INTEGER,
@@ -48,7 +48,7 @@ class ItemDataExtractor extends Extractor<W3TFile, Item> {
         }
         
         @Override
-        public String generateSaveFunctionCall(Item object, Property<Item> property) {
+        public String generateSaveFunctionCall(final Item object, final Property<Item> property) {
             return generateSaveFunctionCall(
                     "'" + CharInt.toString(object.getId()) + "'",
                     Integer.toString(getIndex()),
@@ -58,12 +58,12 @@ class ItemDataExtractor extends Extractor<W3TFile, Item> {
     }
     
     private class ItemFieldRequest extends FieldRequest {
-        private boolean      restrictToClasses;
+        private boolean            restrictToClasses;
         
-        private Set<String>  classes;
-        private Set<Integer> itemIdsToLoad;
+        private final Set<String>  classes;
+        private final Set<Integer> itemIdsToLoad;
         
-        public ItemFieldRequest(ItemField field, ItemLoadRequest request) {
+        public ItemFieldRequest(final ItemField field, final ItemLoadRequest request) {
             super(field, request);
             
             restrictToClasses = request.isRestrictedToClasses();
@@ -72,10 +72,10 @@ class ItemDataExtractor extends Extractor<W3TFile, Item> {
         }
         
         @Override
-        public void absorb(LoadRequest request) {
+        public void absorb(final LoadRequest request) {
             super.absorb(request);
             
-            ItemLoadRequest req = (ItemLoadRequest) request;
+            final ItemLoadRequest req = (ItemLoadRequest) request;
             
             restrictToClasses = restrictToClasses && req.isRestrictedToClasses();
             classes.addAll(req.getClasses());
@@ -83,12 +83,12 @@ class ItemDataExtractor extends Extractor<W3TFile, Item> {
         }
         
         @Override
-        protected boolean canLoad(Item object) {
+        protected boolean canLoad(final Item object) {
             boolean load = false;
             
             if (isLoadDefaults()) {
                 if (restrictToClasses) {
-                    Property<Item> property = object.getProperty(FIELD_ID_CLASS);
+                    final Property<Item> property = object.getProperty(FIELD_ID_CLASS);
                     if (property != null && classes.contains(property.getValue())) {
                         load = true;
                     } else if (itemIdsToLoad.contains(object.getId())) {
@@ -110,24 +110,24 @@ class ItemDataExtractor extends Extractor<W3TFile, Item> {
     }
     
     private class ItemLoadRequest extends LoadRequest {
-        private boolean      restrictToClasses = false;
+        private boolean            restrictToClasses = false;
         
-        private Set<String>  classes           = new HashSet<String>();
-        private Set<Integer> itemIdsToLoad     = new HashSet<Integer>();
+        private final Set<String>  classes           = new HashSet<String>();
+        private final Set<Integer> itemIdsToLoad     = new HashSet<Integer>();
         
-        public ItemLoadRequest(String[] words) {
+        public ItemLoadRequest(final String[] words) {
             super(words);
             
-            for (String word : words) {
+            for (final String word : words) {
                 if (word.toLowerCase().startsWith("classes=")) {
                     restrictToClasses = true;
-                    String[] classes = word.substring(8).split(",");
-                    for (String cls : classes) {
+                    final String[] classes = word.substring(8).split(",");
+                    for (final String cls : classes) {
                         this.classes.add(cls);
                     }
                 } else if (word.toLowerCase().startsWith("rawcodes=")) {
-                    String[] rawcodes = word.substring(9).split(",");
-                    for (String rawcode : rawcodes) {
+                    final String[] rawcodes = word.substring(9).split(",");
+                    for (final String rawcode : rawcodes) {
                         itemIdsToLoad.add(CharInt.toInt(rawcode));
                     }
                 }
@@ -147,7 +147,7 @@ class ItemDataExtractor extends Extractor<W3TFile, Item> {
         }
     }
     
-    public ItemDataExtractor(File enclosingFolder, W3TFile w3tFile) throws IOException {
+    public ItemDataExtractor(final File enclosingFolder, final W3TFile w3tFile) throws IOException {
         super(enclosingFolder, w3tFile);
     }
     
@@ -168,16 +168,16 @@ class ItemDataExtractor extends Extractor<W3TFile, Item> {
     
     @Override
     protected void loadMetadata() throws IOException {
-        SLKFile slk = new SLKFile(new File(getMetaPath(), "UnitMetaData.slk"));
+        final SLKFile slk = new SLKFile(new File(getMetaPath(), "UnitMetaData.slk"));
         
         for (int row = 1; row < slk.getHeight(); row += 1) {
-            String fieldID = slk.getCell(0, row).toString();
-            String name = slk.getCell(1, row).toString();
-            String slkName = slk.getCell(2, row).toString();
-            String index = slk.getCell(3, row).toString();
-            String type = slk.getCell(7, row).toString();
+            final String fieldID = slk.getCell(0, row).toString();
+            final String name = slk.getCell(1, row).toString();
+            final String slkName = slk.getCell(2, row).toString();
+            final String index = slk.getCell(3, row).toString();
+            final String type = slk.getCell(7, row).toString();
             
-            ItemField f = (ItemField) getField(CharInt.toInt(fieldID));
+            final ItemField f = (ItemField) getField(CharInt.toInt(fieldID));
             
             if (f != null) {
                 removeFromInvalidFields(f);
@@ -204,15 +204,15 @@ class ItemDataExtractor extends Extractor<W3TFile, Item> {
     
     @Override
     protected void loadDefaultObjects() throws IOException {
-        SLKFile slk = new SLKFile(new File(getDataPath(), "ItemData.slk"));
+        final SLKFile slk = new SLKFile(new File(getDataPath(), "ItemData.slk"));
         for (int i = 1; i < slk.getHeight(); i += 1) {
-            Object[] row = slk.getRow(i);
+            final Object[] row = slk.getRow(i);
             
-            int id = CharInt.toInt(row[0].toString());
-            String cls = row[COLUMN_ITEM_CLASS].toString();
+            final int id = CharInt.toInt(row[0].toString());
+            final String cls = row[COLUMN_ITEM_CLASS].toString();
             
             if (getObject(id) == null) {
-                Item item = new Item(id);
+                final Item item = new Item(id);
                 item.addProperty(new Property<Item>(FIELD_ID_DEFAULT_ITEM, PropertyType.BOOLEAN, true));
                 item.addProperty(new Property<Item>(FIELD_ID_CLASS, PropertyType.STRING, cls));
                 addObject(item);
@@ -221,9 +221,9 @@ class ItemDataExtractor extends Extractor<W3TFile, Item> {
     }
     
     @Override
-    protected void loadProfile(File file) throws IOException {
-        Metadata<ItemField> data = metadata.get("Profile");
-        BufferedReader br = new BufferedReader(new FileReader(file));
+    protected void loadProfile(final File file) throws IOException {
+        final Metadata<ItemField> data = metadata.get("Profile");
+        final BufferedReader br = new BufferedReader(new FileReader(file));
         boolean inBlock = false;
         Item item = null;
         for (String line = br.readLine(); line != null; line = br.readLine()) {
@@ -236,16 +236,16 @@ class ItemDataExtractor extends Extractor<W3TFile, Item> {
                 item = getObject(CharInt.toInt(line.substring(1, 5)));
                 inBlock = item != null; // verify if its a valid entry
             } else if (inBlock) { // only proceed if the units valid, we dont want entries for invalid units
-                String[] lineParts = line.split("=", 2);
+                final String[] lineParts = line.split("=", 2);
                 
                 // Column headings might refer to multiple fields (identified uniquely by their field IDs)
                 // Example: Buttonpos refers to ubpx and ubpy, in that order. Values are separated by commas.
-                List<ItemField> fields = data.getFields(lineParts[0]);
+                final List<ItemField> fields = data.getFields(lineParts[0]);
                 if (fields == null) {
                     continue;
                 }
                 
-                for (ItemField f : fields) {
+                for (final ItemField f : fields) {
                     item.addProperty(new Property<Item>(f.getId(), f.getType().getPropertyType(), data.extractValue(
                             lineParts[0],
                             f,
@@ -258,9 +258,9 @@ class ItemDataExtractor extends Extractor<W3TFile, Item> {
     }
     
     @Override
-    protected void loadSLK(File file) throws IOException {
-        SLKFile slk = new SLKFile(file);
-        Metadata<ItemField> data = metadata.get(file.getName().substring(0, file.getName().lastIndexOf('.')));
+    protected void loadSLK(final File file) throws IOException {
+        final SLKFile slk = new SLKFile(file);
+        final Metadata<ItemField> data = metadata.get(file.getName().substring(0, file.getName().lastIndexOf('.')));
         
         if (data == null) {
             return;
@@ -269,14 +269,14 @@ class ItemDataExtractor extends Extractor<W3TFile, Item> {
         // Decide which values need to be loaded from the SLKs,
         // as we are only interested in the ones the map requests us to load.
         //
-        ArrayList<List<ItemField>> columnFields = new ArrayList<List<ItemField>>(slk.getWidth());
+        final ArrayList<List<ItemField>> columnFields = new ArrayList<List<ItemField>>(slk.getWidth());
         for (int i = 0; i < slk.getWidth(); i += 1) {
             columnFields.add(null);
         }
         
-        Object[] firstRow = slk.getRow(0);
+        final Object[] firstRow = slk.getRow(0);
         for (int i = 1; i < firstRow.length; i += 1) { // skip the first column (i=0)
-            Object cell = firstRow[i];
+            final Object cell = firstRow[i];
             if (cell != null) {
                 columnFields.set(i, data.getFields(cell.toString()));
             }
@@ -285,9 +285,9 @@ class ItemDataExtractor extends Extractor<W3TFile, Item> {
         // Now load those that were requested
         //
         for (int i = 1; i < slk.getHeight(); i += 1) {
-            Object[] row = slk.getRow(i);
+            final Object[] row = slk.getRow(i);
             
-            Item item = getObject(CharInt.toInt(row[0].toString()));
+            final Item item = getObject(CharInt.toInt(row[0].toString()));
             if (item == null) {
                 continue;
             }
@@ -296,15 +296,15 @@ class ItemDataExtractor extends Extractor<W3TFile, Item> {
                 // Column headings might refer to multiple fields (identified uniquely by their field IDs)
                 // Example: Buttonpos refers to ubpx and ubpy, in that order. Values are separated by commas.
                 
-                List<ItemField> fields = columnFields.get(column);
+                final List<ItemField> fields = columnFields.get(column);
                 if (fields == null) {
                     continue;
                 }
                 
-                String columnHeading = slk.getCell(column, 0).toString();
-                Object value = row[column];
+                final String columnHeading = slk.getCell(column, 0).toString();
+                final Object value = row[column];
                 
-                for (ItemField f : fields) {
+                for (final ItemField f : fields) {
                     if (value == null) {
                         item.addProperty(new Property<Item>(
                                 f.getId(),
@@ -322,17 +322,17 @@ class ItemDataExtractor extends Extractor<W3TFile, Item> {
     }
     
     @Override
-    protected Field createField(Integer id, String name) {
+    protected Field createField(final Integer id, final String name) {
         return new ItemField(id, name);
     }
     
     @Override
-    protected LoadRequest createLoadRequest(String loadRequestLine) {
+    protected LoadRequest createLoadRequest(final String loadRequestLine) {
         return new ItemLoadRequest(loadRequestLine.split("\\s+"));
     }
     
     @Override
-    protected FieldRequest createFieldRequest(Field field, LoadRequest request) {
+    protected FieldRequest createFieldRequest(final Field field, final LoadRequest request) {
         return new ItemFieldRequest((ItemField) field, (ItemLoadRequest) request);
     }
     

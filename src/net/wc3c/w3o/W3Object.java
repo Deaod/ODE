@@ -7,11 +7,11 @@ import java.util.Map;
 import net.wc3c.util.BufferedDataChannel;
 
 public abstract class W3Object<T extends W3OBase<?>> implements W3OContext<T> {
-    private int                    parentId;
-    private int                    id;
-    private Map<Long, Property<?>> properties = new Hashtable<Long, Property<?>>();
+    private int                          parentId;
+    private int                          id;
+    private final Map<Long, Property<?>> properties = new Hashtable<Long, Property<?>>();
     
-    private T                      context;
+    private T                            context;
     
     /**
      * Returns the current context of this object, usually the file its contained in.
@@ -29,15 +29,15 @@ public abstract class W3Object<T extends W3OBase<?>> implements W3OContext<T> {
      * @param context the new context of this object.
      */
     @Override
-    public void setContext(T context) {
+    public void setContext(final T context) {
         this.context = context;
     }
     
-    protected void setParentId(int id) {
+    protected void setParentId(final int id) {
         this.parentId = id;
     }
     
-    protected void setId(int id) {
+    protected void setId(final int id) {
         this.id = id;
     }
     
@@ -71,15 +71,15 @@ public abstract class W3Object<T extends W3OBase<?>> implements W3OContext<T> {
         return this.id == 0;
     }
     
-    protected Property<?> putProperty(Long key, Property<?> property) {
+    protected Property<?> putProperty(final Long key, final Property<?> property) {
         return this.properties.put(key, property);
     }
     
-    public Property<?> getProperty(Long key) {
+    public Property<?> getProperty(final Long key) {
         if (hasProperty(key)) {
             return this.properties.get(key);
         } else if (isStandardObject() == false) {
-            W3Object<?> object = getContext().getEntry(getParentId());
+            final W3Object<?> object = getContext().getEntry(getParentId());
             if (object != null) {
                 return object.getProperty(key);
             }
@@ -88,22 +88,22 @@ public abstract class W3Object<T extends W3OBase<?>> implements W3OContext<T> {
         return null;
     }
     
-    public Property<?> getPropertyEx(Long key) {
+    public Property<?> getPropertyEx(final Long key) {
         return this.properties.get(key);
     }
     
-    public boolean hasProperty(Long key) {
+    public boolean hasProperty(final Long key) {
         return this.properties.containsKey(key);
     }
     
     protected abstract Property<?> readProperty(BufferedDataChannel dc) throws IOException;
     
-    void readFrom(BufferedDataChannel dc) throws IOException {
+    void readFrom(final BufferedDataChannel dc) throws IOException {
         setParentId(dc.readIntBE());
         setId(dc.readIntBE());
-        int numProperties = dc.readInt();
+        final int numProperties = dc.readInt();
         for (int i = 0; i < numProperties; i += 1) {
-            Property<?> mod = readProperty(dc);
+            final Property<?> mod = readProperty(dc);
             
             putProperty(mod.generateKey(), mod);
         }
@@ -113,7 +113,7 @@ public abstract class W3Object<T extends W3OBase<?>> implements W3OContext<T> {
         
     }
     
-    protected W3Object(BufferedDataChannel dc, T context) throws IOException {
+    protected W3Object(final BufferedDataChannel dc, final T context) throws IOException {
         setContext(context);
         readFrom(dc);
     }
@@ -124,7 +124,7 @@ public abstract class W3Object<T extends W3OBase<?>> implements W3OContext<T> {
      * @param parentId the ID of the parent object.
      * @param id the new object's ID.
      */
-    public W3Object(int parentId, int id) {
+    public W3Object(final int parentId, final int id) {
         this.parentId = parentId;
         this.id = id;
     }
@@ -134,7 +134,7 @@ public abstract class W3Object<T extends W3OBase<?>> implements W3OContext<T> {
      * 
      * @param id the new object's ID.
      */
-    public W3Object(int id) {
+    public W3Object(final int id) {
         this.parentId = id;
         this.id = 0;
     }

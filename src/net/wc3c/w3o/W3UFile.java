@@ -16,7 +16,7 @@ public class W3UFile extends W3OBase<Unit> {
      * @param trigStrs the WTS file.
      * @throws IOException in case there was a problem reading from the W3O file.
      */
-    public W3UFile(Path source, WTSFile trigStrs) throws IOException {
+    public W3UFile(final Path source, final WTSFile trigStrs) throws IOException {
         super(source, trigStrs);
     }
     
@@ -27,7 +27,7 @@ public class W3UFile extends W3OBase<Unit> {
      * @param trigStrs the WTS file.
      * @throws IOException in case there was a problem reading from the W3O file.
      */
-    public W3UFile(String sourcePath, WTSFile trigStrs) throws IOException {
+    public W3UFile(final String sourcePath, final WTSFile trigStrs) throws IOException {
         super(sourcePath, trigStrs);
     }
     
@@ -37,7 +37,7 @@ public class W3UFile extends W3OBase<Unit> {
      * @param source the W3U file.
      * @throws IOException in case there was a problem reading from the W3O file.
      */
-    public W3UFile(Path source) throws IOException {
+    public W3UFile(final Path source) throws IOException {
         super(source);
     }
     
@@ -47,7 +47,7 @@ public class W3UFile extends W3OBase<Unit> {
      * @param sourcePath path to the W3U file.
      * @throws IOException in case there was a problem reading from the W3O file.
      */
-    public W3UFile(String sourcePath) throws IOException {
+    public W3UFile(final String sourcePath) throws IOException {
         super(sourcePath);
     }
     
@@ -56,7 +56,7 @@ public class W3UFile extends W3OBase<Unit> {
      * 
      * @param trigStrs the WTS file;
      */
-    public W3UFile(WTSFile trigStrs) {
+    public W3UFile(final WTSFile trigStrs) {
         super(trigStrs);
     }
     
@@ -81,7 +81,7 @@ public class W3UFile extends W3OBase<Unit> {
      * 
      * @param unit the unit to add.
      */
-    public void addUnit(Unit unit) {
+    public void addUnit(final Unit unit) {
         unit.setContext(this);
         addEntry(unit);
     }
@@ -92,18 +92,18 @@ public class W3UFile extends W3OBase<Unit> {
      * @param unitId the unit ID to look for.
      * @return the desired unit, if it exists, <code>null</code> otherwise.
      */
-    public Unit getUnit(int unitId) {
+    public Unit getUnit(final int unitId) {
         return getEntry(unitId);
     }
     
     @Override
-    protected Unit readEntry(BufferedDataChannel dc) throws IOException {
+    protected Unit readEntry(final BufferedDataChannel dc) throws IOException {
         return new Unit(dc, this);
     }
     
     public static class Unit extends W3Object<W3UFile> {
         @Override
-        protected Property<?> readProperty(BufferedDataChannel dc) throws IOException {
+        protected Property<?> readProperty(final BufferedDataChannel dc) throws IOException {
             return new Property<Unit>(dc, this);
         }
         
@@ -115,7 +115,7 @@ public class W3UFile extends W3OBase<Unit> {
          * @return the property identified by the specified ID or <code>null</code> if no such property exists.
          */
         @SuppressWarnings("unchecked")
-        public Property<Unit> getProperty(int fieldId) {
+        public Property<Unit> getProperty(final int fieldId) {
             return (Property<Unit>) getProperty(Property.generateKey(fieldId));
         }
         
@@ -127,7 +127,7 @@ public class W3UFile extends W3OBase<Unit> {
          * @return the property identified by the specified ID or <code>null</code> if no such property exists.
          */
         @SuppressWarnings("unchecked")
-        public Property<Unit> getPropertyEx(int fieldId) {
+        public Property<Unit> getPropertyEx(final int fieldId) {
             return (Property<Unit>) getPropertyEx(Property.generateKey(fieldId));
         }
         
@@ -137,7 +137,7 @@ public class W3UFile extends W3OBase<Unit> {
          * @param fieldId the ID to look for.
          * @return <code>true</code> if this unit has a property with the specified ID, <code>false</code> otherwise.
          */
-        public boolean hasProperty(int fieldId) {
+        public boolean hasProperty(final int fieldId) {
             return hasProperty(Property.generateKey(fieldId));
         }
         
@@ -147,7 +147,7 @@ public class W3UFile extends W3OBase<Unit> {
          * 
          * @param property the property to add.
          */
-        public void addProperty(Property<Unit> property) {
+        public void addProperty(final Property<Unit> property) {
             if (hasProperty(property.getFieldId())) {
                 return;
             }
@@ -156,7 +156,7 @@ public class W3UFile extends W3OBase<Unit> {
             putProperty(property.generateKey(), property);
         }
         
-        Unit(BufferedDataChannel dc, W3UFile context) throws IOException {
+        Unit(final BufferedDataChannel dc, final W3UFile context) throws IOException {
             super(dc, context);
         }
         
@@ -166,7 +166,7 @@ public class W3UFile extends W3OBase<Unit> {
          * @param parentId the ID of the parent unit.
          * @param id the new unit's ID.
          */
-        public Unit(int parentId, int id) {
+        public Unit(final int parentId, final int id) {
             super(parentId, id);
         }
         
@@ -175,7 +175,7 @@ public class W3UFile extends W3OBase<Unit> {
          * 
          * @param id the new unit's ID.
          */
-        public Unit(int id) {
+        public Unit(final int id) {
             super(id);
         }
     }

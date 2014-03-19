@@ -16,7 +16,7 @@ public class W3DFile extends W3OBase<Doodad> {
      * @param trigStrs the WTS file.
      * @throws IOException in case there was a problem reading from the W3D file.
      */
-    public W3DFile(Path source, WTSFile trigStrs) throws IOException {
+    public W3DFile(final Path source, final WTSFile trigStrs) throws IOException {
         super(source, trigStrs);
     }
     
@@ -27,7 +27,7 @@ public class W3DFile extends W3OBase<Doodad> {
      * @param trigStrs the WTS file.
      * @throws IOException in case there was a problem reading from the W3D file.
      */
-    public W3DFile(String sourcePath, WTSFile trigStrs) throws IOException {
+    public W3DFile(final String sourcePath, final WTSFile trigStrs) throws IOException {
         super(sourcePath, trigStrs);
     }
     
@@ -37,7 +37,7 @@ public class W3DFile extends W3OBase<Doodad> {
      * @param source the W3D file.
      * @throws IOException in case there was a problem reading from the W3D file.
      */
-    public W3DFile(Path source) throws IOException {
+    public W3DFile(final Path source) throws IOException {
         super(source);
     }
     
@@ -47,7 +47,7 @@ public class W3DFile extends W3OBase<Doodad> {
      * @param sourcePath path to the W3D file.
      * @throws IOException in case there was a problem reading from the W3D file.
      */
-    public W3DFile(String sourcePath) throws IOException {
+    public W3DFile(final String sourcePath) throws IOException {
         super(sourcePath);
     }
     
@@ -56,7 +56,7 @@ public class W3DFile extends W3OBase<Doodad> {
      * 
      * @param trigStrs the WTS file;
      */
-    public W3DFile(WTSFile trigStrs) {
+    public W3DFile(final WTSFile trigStrs) {
         super(trigStrs);
     }
     
@@ -81,7 +81,7 @@ public class W3DFile extends W3OBase<Doodad> {
      * 
      * @param doodad the doodad to add.
      */
-    public void addDoodad(Doodad doodad) {
+    public void addDoodad(final Doodad doodad) {
         doodad.setContext(this);
         addEntry(doodad);
     }
@@ -92,18 +92,18 @@ public class W3DFile extends W3OBase<Doodad> {
      * @param doodadId the doodad ID to look for.
      * @return the desired doodad, if it exists, <code>null</code> otherwise.
      */
-    public Doodad getDoodad(int doodadId) {
+    public Doodad getDoodad(final int doodadId) {
         return getEntry(doodadId);
     }
     
     @Override
-    protected Doodad readEntry(BufferedDataChannel dc) throws IOException {
+    protected Doodad readEntry(final BufferedDataChannel dc) throws IOException {
         return new Doodad(dc, this);
     }
     
     public static class Doodad extends W3Object<W3DFile> {
         @Override
-        protected Property<?> readProperty(BufferedDataChannel dc) throws IOException {
+        protected Property<?> readProperty(final BufferedDataChannel dc) throws IOException {
             return new VariationProperty<Doodad>(dc, this);
         }
         
@@ -115,8 +115,8 @@ public class W3DFile extends W3OBase<Doodad> {
          * @return the property identified by the specified ID or <code>null</code> if no such property exists.
          */
         @SuppressWarnings("unchecked")
-        public VariationProperty<Doodad> getProperty(int fieldId) {
-            return (VariationProperty<Doodad>) getProperty(VariationProperty.generateKey(fieldId));
+        public VariationProperty<Doodad> getProperty(final int fieldId) {
+            return (VariationProperty<Doodad>) getProperty(Property.generateKey(fieldId));
         }
         
         /**
@@ -127,8 +127,8 @@ public class W3DFile extends W3OBase<Doodad> {
          * @return the property identified by the specified ID or <code>null</code> if no such property exists.
          */
         @SuppressWarnings("unchecked")
-        public VariationProperty<Doodad> getPropertyEx(int fieldId) {
-            return (VariationProperty<Doodad>) getPropertyEx(VariationProperty.generateKey(fieldId));
+        public VariationProperty<Doodad> getPropertyEx(final int fieldId) {
+            return (VariationProperty<Doodad>) getPropertyEx(Property.generateKey(fieldId));
         }
         
         /**
@@ -137,8 +137,8 @@ public class W3DFile extends W3OBase<Doodad> {
          * @param fieldId the ID to look for.
          * @return <code>true</code> if this doodad has a property with the specified ID, <code>false</code> otherwise.
          */
-        public boolean hasProperty(int fieldId) {
-            return hasProperty(VariationProperty.generateKey(fieldId));
+        public boolean hasProperty(final int fieldId) {
+            return hasProperty(Property.generateKey(fieldId));
         }
         
         /**
@@ -147,7 +147,7 @@ public class W3DFile extends W3OBase<Doodad> {
          * 
          * @param property the property to add.
          */
-        public void addProperty(VariationProperty<Doodad> property) {
+        public void addProperty(final VariationProperty<Doodad> property) {
             if (hasProperty(property.getFieldId())) {
                 return;
             }
@@ -156,7 +156,7 @@ public class W3DFile extends W3OBase<Doodad> {
             putProperty(property.generateKey(), property);
         }
         
-        Doodad(BufferedDataChannel dc, W3DFile context) throws IOException {
+        Doodad(final BufferedDataChannel dc, final W3DFile context) throws IOException {
             super(dc, context);
         }
         
@@ -166,7 +166,7 @@ public class W3DFile extends W3OBase<Doodad> {
          * @param parentId the ID of the parent doodad.
          * @param id the new doodad's ID.
          */
-        public Doodad(int parentId, int id) {
+        public Doodad(final int parentId, final int id) {
             super(parentId, id);
         }
         
@@ -175,7 +175,7 @@ public class W3DFile extends W3OBase<Doodad> {
          * 
          * @param id the new doodad's ID.
          */
-        public Doodad(int id) {
+        public Doodad(final int id) {
             super(id);
         }
     }

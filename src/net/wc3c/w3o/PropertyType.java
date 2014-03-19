@@ -26,12 +26,12 @@ public enum PropertyType {
     
     private int value;
     
-    private PropertyType(int value) {
+    private PropertyType(final int value) {
         this.value = value;
     }
     
-    static PropertyType fromInt(int value) {
-        for (PropertyType type : values()) {
+    static PropertyType fromInt(final int value) {
+        for (final PropertyType type : values()) {
             if (type.value == value) {
                 return type;
             }

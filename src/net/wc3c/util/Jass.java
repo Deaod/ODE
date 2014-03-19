@@ -21,16 +21,17 @@ public abstract class Jass {
         return indentation.toString();
     }
     
-    public static final String function(String name, Type returnType, Parameter... params) {
+    public static final String function(final String name, final Type returnType, final Parameter... params) {
         return function(Visibility.DEFAULT, name, returnType, params);
     }
     
-    public static final String function(Visibility vis, String name, Type returnType, Parameter... params) {
-        StringBuilder result = new StringBuilder();
+    public static final String function(final Visibility vis, final String name, final Type returnType,
+            final Parameter... params) {
+        final StringBuilder result = new StringBuilder();
         result.append(indentation() + vis.getValue() + " function " + name + " takes ");
         
         if (params.length > 0) {
-            for (Parameter param : params) {
+            for (final Parameter param : params) {
                 result.append(param.type.getValue() + " " + param.name + ",");
             }
             result.deleteCharAt(result.length() - 1);
@@ -51,14 +52,14 @@ public abstract class Jass {
         return indentation() + "endfunction" + LS;
     }
     
-    public static final String library(String name) {
-        String result = indentation() + "library " + name + LS;
+    public static final String library(final String name) {
+        final String result = indentation() + "library " + name + LS;
         increaseIndentation();
         return result;
     }
     
-    public static final String library(String name, String initializerName) {
-        String result = indentation() + "library " + name + " initializer " + initializerName + LS;
+    public static final String library(final String name, final String initializerName) {
+        final String result = indentation() + "library " + name + " initializer " + initializerName + LS;
         increaseIndentation();
         return result;
     }
@@ -68,22 +69,22 @@ public abstract class Jass {
         return indentation() + "endlibrary" + LS;
     }
     
-    public static final String ifBranch(String condition) {
-        String result = indentation() + "if " + condition + " then" + LS;
+    public static final String ifBranch(final String condition) {
+        final String result = indentation() + "if " + condition + " then" + LS;
         increaseIndentation();
         return result;
     }
     
     public static final String elseBranch() {
         decreaseIndentation();
-        String result = indentation() + "else" + LS;
+        final String result = indentation() + "else" + LS;
         increaseIndentation();
         return result;
     }
     
-    public static final String elseifBranch(String condition) {
+    public static final String elseifBranch(final String condition) {
         decreaseIndentation();
-        String result = indentation() + "elseif " + condition + " then" + LS;
+        final String result = indentation() + "elseif " + condition + " then" + LS;
         increaseIndentation();
         return result;
     }
@@ -93,13 +94,13 @@ public abstract class Jass {
         return indentation() + "endif" + LS;
     }
     
-    public static final String call(String functionName, String... params) {
-        StringBuilder result = new StringBuilder();
+    public static final String call(final String functionName, final String... params) {
+        final StringBuilder result = new StringBuilder();
         
         result.append(indentation() + "call " + functionName + "(");
         
         if (params.length > 0) {
-            for (String param : params) {
+            for (final String param : params) {
                 result.append(param + ",");
             }
             result.setCharAt(result.length() - 1, ')');
@@ -112,7 +113,7 @@ public abstract class Jass {
         return result.toString();
     }
     
-    public static final String execute(String functionName) {
+    public static final String execute(final String functionName) {
         return Jass.call("ExecuteFunc", functionName);
     }
     
@@ -120,17 +121,17 @@ public abstract class Jass {
         return indentation() + "return" + LS;
     }
     
-    public static final String ret(String value) {
+    public static final String ret(final String value) {
         return indentation() + "return " + value + LS;
     }
     
-    public static final String set(String varName, String value, String... dimensions) {
-        StringBuilder result = new StringBuilder();
+    public static final String set(final String varName, final String value, final String... dimensions) {
+        final StringBuilder result = new StringBuilder();
         
         result.append(indentation() + "set ");
         result.append(varName);
         
-        for (String dimension : dimensions) {
+        for (final String dimension : dimensions) {
             result.append("[" + dimension + "]");
         }
         
@@ -141,16 +142,17 @@ public abstract class Jass {
     }
     
     public static final String globals() {
-        String result = indentation() + "globals" + LS;
+        final String result = indentation() + "globals" + LS;
         increaseIndentation();
         return result;
     }
     
-    public static final String globalVar(Visibility vis, Type type, boolean array, String name) {
+    public static final String globalVar(final Visibility vis, final Type type, final boolean array, final String name) {
         return indentation() + vis.getValue() + " " + type.getValue() + " " + (array ? "array " : "") + name + LS;
     }
     
-    public static final String globalVar(Visibility vis, Type type, String name, String defaultValue) {
+    public static final String globalVar(final Visibility vis, final Type type, final String name,
+            final String defaultValue) {
         return indentation() + vis.getValue() + " " + type.getValue() + " " + name + "=" + defaultValue + LS;
     }
     
@@ -163,7 +165,7 @@ public abstract class Jass {
         Type   type;
         String name;
         
-        public Parameter(Type type, String name) {
+        public Parameter(final Type type, final String name) {
             this.type = type;
             this.name = name;
         }
@@ -181,12 +183,12 @@ public abstract class Jass {
         
         String value;
         
-        private Type(String value) {
+        private Type(final String value) {
             this.value = value;
         }
         
         public final String getValue() {
-            return this.value;
+            return value;
         }
     }
     
@@ -198,12 +200,12 @@ public abstract class Jass {
         
         String value;
         
-        private Visibility(String value) {
+        private Visibility(final String value) {
             this.value = value;
         }
         
         public final String getValue() {
-            return this.value;
+            return value;
         }
     }
 }

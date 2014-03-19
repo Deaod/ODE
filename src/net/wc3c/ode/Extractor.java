@@ -43,21 +43,21 @@ import net.wc3c.w3o.W3Object;
 
 public abstract class Extractor<Data extends W3OBase<Type>, Type extends W3Object<Data>> {
     
-    private static final String      LS             = System.getProperty("line.separator");
+    private static final String            LS             = System.getProperty("line.separator");
     
-    private static final String      MINIMAL_INIT   = "MinimalInit";
-    private static final String      DATA_PATH      = "data";
-    private static final String      META_DATA_PATH = "meta";
-    protected static final String    HASHTABLE_NAME = "info";
+    private static final String            MINIMAL_INIT   = "MinimalInit";
+    private static final String            DATA_PATH      = "data";
+    private static final String            META_DATA_PATH = "meta";
+    protected static final String          HASHTABLE_NAME = "info";
     
-    private List<Field>              invalidFields  = new ArrayList<Field>();
-    private Map<Integer, Field>      fields         = new Hashtable<Integer, Field>();
-    private Map<Field, FieldRequest> fieldRequests  = new Hashtable<Field, FieldRequest>();
+    private final List<Field>              invalidFields  = new ArrayList<Field>();
+    private final Map<Integer, Field>      fields         = new Hashtable<Integer, Field>();
+    private final Map<Field, FieldRequest> fieldRequests  = new Hashtable<Field, FieldRequest>();
     
-    private File                     dataPath;
-    private File                     metaPath;
-    private Data                     objectData;
-    private SequentialIntGenerator   fieldIdGen     = new SequentialIntGenerator();
+    private final File                     dataPath;
+    private final File                     metaPath;
+    private final Data                     objectData;
+    private final SequentialIntGenerator   fieldIdGen     = new SequentialIntGenerator();
     
     protected abstract String getCommandString();
     
@@ -112,14 +112,15 @@ public abstract class Extractor<Data extends W3OBase<Type>, Type extends W3Objec
             return this.defaultValue;
         }
         
-        private FieldType(String functionName, Jass.Type jassType, PropertyType propertyType, Object defaultValue) {
+        private FieldType(final String functionName, final Jass.Type jassType, final PropertyType propertyType,
+                final Object defaultValue) {
             this.functionName = functionName;
             this.jassType = jassType;
             this.propertyType = propertyType;
             this.defaultValue = defaultValue;
         }
         
-        public final FieldType fromString(String str) {
+        public final FieldType fromString(final String str) {
             if (str.equalsIgnoreCase("int")) {
                 return FieldType.INTEGER;
             } else if (str.equalsIgnoreCase("bool")) {
@@ -133,27 +134,27 @@ public abstract class Extractor<Data extends W3OBase<Type>, Type extends W3Objec
     }
     
     protected abstract class Field {
-        private int       id;
-        private String    name;
-        private FieldType type;
-        private int       index;
+        private final int    id;
+        private final String name;
+        private FieldType    type;
+        private int          index;
         
-        public Field(Integer id, String name) {
+        public Field(final Integer id, final String name) {
             this.id = id;
             this.name = name;
         }
         
-        public final void setIndex(int index) {
+        public final void setIndex(final int index) {
             this.index = index;
         }
         
-        public final void setType(FieldType type) {
+        public final void setType(final FieldType type) {
             this.type = type;
         }
         
         public abstract StringBuilder generateLoadFunction();
         
-        private String jassifyValue(Object value) {
+        private String jassifyValue(final Object value) {
             if (value == null) {
                 if (getType() == FieldType.STRING) {
                     return "\"\"";
@@ -179,14 +180,14 @@ public abstract class Extractor<Data extends W3OBase<Type>, Type extends W3Objec
                 case INTEGER:
                     try {
                         return Integer.valueOf(value.toString()).toString();
-                    } catch (NumberFormatException e) {
+                    } catch (final NumberFormatException e) {
                         return getType().getDefaultValue().toString();
                     }
                     
                 case REAL:
                     try {
                         return Float.valueOf(value.toString()).toString();
-                    } catch (NumberFormatException e) {
+                    } catch (final NumberFormatException e) {
                         return getType().getDefaultValue().toString();
                     }
                     
@@ -199,7 +200,7 @@ public abstract class Extractor<Data extends W3OBase<Type>, Type extends W3Objec
             }
         }
         
-        public final String generateSaveFunctionCall(String index1, String index2, Object value) {
+        public final String generateSaveFunctionCall(final String index1, final String index2, final Object value) {
             return call(getType().saveFunctionName(), HASHTABLE_NAME, index1, index2, jassifyValue(value));
         }
         
@@ -227,12 +228,12 @@ public abstract class Extractor<Data extends W3OBase<Type>, Type extends W3Objec
     }
     
     protected abstract class FieldRequest {
-        private boolean initialize   = true;
-        private boolean loadDefaults = false;
+        private boolean     initialize   = true;
+        private boolean     loadDefaults = false;
         
-        private Field   field;
+        private final Field field;
         
-        public void absorb(LoadRequest request) {
+        public void absorb(final LoadRequest request) {
             this.initialize = this.initialize || request.initialize;
             this.loadDefaults = this.loadDefaults || request.loadDefaults;
         }
@@ -243,9 +244,9 @@ public abstract class Extractor<Data extends W3OBase<Type>, Type extends W3Objec
         
         protected abstract boolean canLoad(Type object);
         
-        private StringBuilder generateInitializer(Collection<Type> data) {
-            StringBuilder code = new StringBuilder();
-            String initVarName = "didInitialize" + this.field.getId();
+        private StringBuilder generateInitializer(final Collection<Type> data) {
+            final StringBuilder code = new StringBuilder();
+            final String initVarName = "didInitialize" + this.field.getId();
             
             code.append(globals());
             code.append(globalVar(PRIVATE, BOOLEAN, initVarName, "false"));
@@ -261,10 +262,10 @@ public abstract class Extractor<Data extends W3OBase<Type>, Type extends W3Objec
             // i doubt any map has more than 10000 modified objects of a single type (unit, item, destructable, ...).
             // 10000 was the original limit of consecutive loads to avoid crashing the thread for loading.
             
-            for (Type object : data) {
+            for (final Type object : data) {
                 if (canLoad(object)) {
                     @SuppressWarnings("unchecked")
-                    Property<Type> property = (Property<Type>) object.getProperty(this.field.generateKey());
+                    final Property<Type> property = (Property<Type>) object.getProperty(this.field.generateKey());
                     
                     if (property != null) {
                         code.append(this.field.generateSaveFunctionCall(object, property));
@@ -277,12 +278,12 @@ public abstract class Extractor<Data extends W3OBase<Type>, Type extends W3Objec
             return code;
         }
         
-        protected void initialize(LoadRequest request) {
+        protected void initialize(final LoadRequest request) {
             this.initialize = request.initialize;
             this.loadDefaults = request.loadDefaults;
         }
         
-        public FieldRequest(Field field, LoadRequest request) {
+        public FieldRequest(final Field field, final LoadRequest request) {
             this.field = field;
             
             initialize(request);
@@ -290,21 +291,21 @@ public abstract class Extractor<Data extends W3OBase<Type>, Type extends W3Objec
     }
     
     protected abstract class LoadRequest {
-        private boolean     initialize      = true;
-        private boolean     loadDefaults    = false;
+        private boolean           initialize      = true;
+        private boolean           loadDefaults    = false;
         
-        private List<Field> requestedFields = new ArrayList<Field>();
+        private final List<Field> requestedFields = new ArrayList<Field>();
         
-        public LoadRequest(String[] words) {
-            for (String word : words) {
+        public LoadRequest(final String[] words) {
+            for (final String word : words) {
                 if (word.toLowerCase().equals("-noinit")) {
                     this.initialize = false;
                 } else if (word.toLowerCase().equals("-defaults")) {
                     this.loadDefaults = true;
                 } else if (word.toLowerCase().startsWith("fields=")) {
-                    String fieldList[] = word.substring(7).split(",");
-                    for (String field : fieldList) {
-                        Field f = Extractor.this.fields.get(CharInt.toInt(field));
+                    final String fieldList[] = word.substring(7).split(",");
+                    for (final String field : fieldList) {
+                        final Field f = Extractor.this.fields.get(CharInt.toInt(field));
                         if (f != null) {
                             this.requestedFields.add(f);
                         }
@@ -319,34 +320,34 @@ public abstract class Extractor<Data extends W3OBase<Type>, Type extends W3Objec
         }
     }
     
-    private final void addToInvalidFields(Field f) {
+    private final void addToInvalidFields(final Field f) {
         this.invalidFields.add(f);
     }
     
-    protected final void removeFromInvalidFields(Field f) {
+    protected final void removeFromInvalidFields(final Field f) {
         this.invalidFields.remove(f);
     }
     
     private final void removeInvalidFields() {
-        for (Field f : this.invalidFields) {
+        for (final Field f : this.invalidFields) {
             this.fields.remove(f);
         }
     }
     
-    protected final void addRawcodeMapEntry(String id, String name) {
-        Field f = createField(CharInt.toInt(id), name);
+    protected final void addRawcodeMapEntry(final String id, final String name) {
+        final Field f = createField(CharInt.toInt(id), name);
         f.setIndex(this.fieldIdGen.next());
         this.fields.put(CharInt.toInt(id), f);
         addToInvalidFields(f);
     }
     
-    private StringBuilder processLibrary(String line) {
-        StringBuilder out = new StringBuilder();
-        String[] words = line.split("\\s+");
+    private StringBuilder processLibrary(final String line) {
+        final StringBuilder out = new StringBuilder();
+        final String[] words = line.split("\\s+");
         boolean hasReq = false;
         boolean isReq = false;
         
-        for (String word : words) {
+        for (final String word : words) {
             if (hasReq) {
                 if (word.startsWith(getLibraryNameString() + ",")
                         || word.equals(getLibraryNameString())
@@ -370,8 +371,8 @@ public abstract class Extractor<Data extends W3OBase<Type>, Type extends W3Objec
         return out;
     }
     
-    private void mergeLoadRequestIntoExistingRequests(LoadRequest request) {
-        for (Field field : request.getRequestedFields()) {
+    private void mergeLoadRequestIntoExistingRequests(final LoadRequest request) {
+        for (final Field field : request.getRequestedFields()) {
             FieldRequest fieldRequest = this.fieldRequests.get(field);
             if (fieldRequest == null) {
                 fieldRequest = createFieldRequest(field, request);
@@ -383,7 +384,7 @@ public abstract class Extractor<Data extends W3OBase<Type>, Type extends W3Objec
     }
     
     private StringBuilder generateJASSCode() {
-        StringBuilder out = new StringBuilder();
+        final StringBuilder out = new StringBuilder();
         
         out.append(library(getLibraryNameString(), MINIMAL_INIT));
         out.append(globals());
@@ -391,7 +392,7 @@ public abstract class Extractor<Data extends W3OBase<Type>, Type extends W3Objec
         out.append(globalVar(PRIVATE, BOOLEAN, "alreadyRan", "false"));
         out.append(endglobals());
         
-        for (FieldRequest request : this.fieldRequests.values()) {
+        for (final FieldRequest request : this.fieldRequests.values()) {
             out.append(request.field.generateLoadFunction());
             out.append(request.generateInitializer(this.objectData.getEntries()));
         }
@@ -401,13 +402,13 @@ public abstract class Extractor<Data extends W3OBase<Type>, Type extends W3Objec
         out.append(ret());
         out.append(endBranch());
         out.append(set("alreadyRan", "true"));
-        for (FieldRequest request : this.fieldRequests.values()) {
+        for (final FieldRequest request : this.fieldRequests.values()) {
             out.append(execute("SCOPE_PRIVATE+\"Init" + request.field.name + "\""));
         }
         out.append(endfunction());
         
         out.append(function(PRIVATE, MINIMAL_INIT, NOTHING));
-        for (FieldRequest request : this.fieldRequests.values()) {
+        for (final FieldRequest request : this.fieldRequests.values()) {
             if (request.initialize) {
                 out.append(execute("SCOPE_PRIVATE+\"Init" + request.field.name + "\""));
             }
@@ -419,16 +420,16 @@ public abstract class Extractor<Data extends W3OBase<Type>, Type extends W3Objec
     }
     
     private void loadProfiles() throws IOException {
-        File profile = new File(this.dataPath, "profile");
+        final File profile = new File(this.dataPath, "profile");
         
-        for (File fi : profile.listFiles()) {
+        for (final File fi : profile.listFiles()) {
             loadProfile(fi);
         }
         
     }
     
     private void loadSlks() throws IOException {
-        for (File f : this.dataPath.listFiles()) {
+        for (final File f : this.dataPath.listFiles()) {
             // make sure we only load files ending with .slk
             if (f.isFile() && f.getName().endsWith(".slk")) {
                 loadSLK(f);
@@ -444,36 +445,36 @@ public abstract class Extractor<Data extends W3OBase<Type>, Type extends W3Objec
         return this.metaPath;
     }
     
-    protected final Field getField(int id) {
+    protected final Field getField(final int id) {
         return this.fields.get(id);
     }
     
-    protected final void addObject(Type object) {
+    protected final void addObject(final Type object) {
         this.objectData.addEntry(object);
     }
     
-    protected final Type getObject(int id) {
+    protected final Type getObject(final int id) {
         return this.objectData.getEntry(id);
     }
     
-    public final String processScript(String scriptContent) throws IOException {
+    public final String processScript(final String scriptContent) throws IOException {
         trace("Entering Extractor.processScript(String)");
-        BufferedReader br = new BufferedReader(new StringReader(scriptContent));
-        StringBuilder out = new StringBuilder();
-        List<String> loadRequestLines = new LinkedList<String>();
+        final BufferedReader br = new BufferedReader(new StringReader(scriptContent));
+        final StringBuilder out = new StringBuilder();
+        final List<String> loadRequestLines = new LinkedList<String>();
         
         info("Processing script content");
         
         String currentLine = br.readLine();
         while (currentLine != null) {
-            String rls = currentLine.trim();
+            final String rls = currentLine.trim();
             
             if (rls.startsWith("//! ")) {
-                String[] words = rls.split("\\s+");
+                final String[] words = rls.split("\\s+");
                 
                 if (words.length >= 2) {
-                    String normalizedRequest = words[1].toLowerCase(Locale.ENGLISH);
-                    String normalizedCommand = getCommandString().toLowerCase(Locale.ENGLISH);
+                    final String normalizedRequest = words[1].toLowerCase(Locale.ENGLISH);
+                    final String normalizedCommand = getCommandString().toLowerCase(Locale.ENGLISH);
                     
                     if (normalizedRequest.equals(normalizedCommand)) {
                         loadRequestLines.add(rls);
@@ -499,7 +500,7 @@ public abstract class Extractor<Data extends W3OBase<Type>, Type extends W3Objec
         removeInvalidFields();
         
         info("Processing load request lines");
-        for (String loadRequestLine : loadRequestLines) {
+        for (final String loadRequestLine : loadRequestLines) {
             mergeLoadRequestIntoExistingRequests(createLoadRequest(loadRequestLine));
         }
         
@@ -522,7 +523,7 @@ public abstract class Extractor<Data extends W3OBase<Type>, Type extends W3Objec
         return scriptContent;
     }
     
-    protected Extractor(File enclosingFolder, Data objectData) throws IOException {
+    protected Extractor(final File enclosingFolder, final Data objectData) throws IOException {
         this.dataPath = new File(enclosingFolder, DATA_PATH);
         this.metaPath = new File(this.dataPath, META_DATA_PATH);
         this.objectData = objectData;

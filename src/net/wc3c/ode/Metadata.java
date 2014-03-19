@@ -12,7 +12,7 @@ import java.util.List;
  * @param <F>
  */
 class Metadata<F extends Extractor<?, ?>.Field> {
-    private Hashtable<String, List<F>> fieldMapping = new Hashtable<String, List<F>>();
+    private final Hashtable<String, List<F>> fieldMapping = new Hashtable<String, List<F>>();
     
     /**
      * Associates the given field with the given property name
@@ -21,7 +21,7 @@ class Metadata<F extends Extractor<?, ?>.Field> {
      * @param index the index of the field for the given name
      * @param field the field in question
      */
-    public void insertIntoFieldMapping(String name, int index, F field) {
+    public void insertIntoFieldMapping(final String name, final int index, final F field) {
         List<F> list = this.fieldMapping.get(name);
         
         if (list == null) {
@@ -45,8 +45,8 @@ class Metadata<F extends Extractor<?, ?>.Field> {
      * @param property the name of the property you want a list of fields of
      * @return a list of fields sharing the property name, or <code>null</code> if no fields share that property name
      */
-    public List<F> getFields(String property) {
-        List<F> fields = this.fieldMapping.get(property);
+    public List<F> getFields(final String property) {
+        final List<F> fields = this.fieldMapping.get(property);
         
         if (fields != null) {
             return Collections.unmodifiableList(fields);
@@ -63,15 +63,15 @@ class Metadata<F extends Extractor<?, ?>.Field> {
      * @param rawValue the raw value to extract data from
      * @return the requested value of the field
      */
-    public Object extractValue(String property, F field, String rawValue) {
-        List<F> list = this.fieldMapping.get(property);
+    public Object extractValue(final String property, final F field, final String rawValue) {
+        final List<F> list = this.fieldMapping.get(property);
         assert list != null;
         String result;
         
         if (list.size() > 1) {
-            int index = list.indexOf(field);
+            final int index = list.indexOf(field);
             assert index > -1;
-            String[] values = rawValue.split(",");
+            final String[] values = rawValue.split(",");
             
             if (index >= values.length) {
                 return field.getType().getDefaultValue();
@@ -93,14 +93,14 @@ class Metadata<F extends Extractor<?, ?>.Field> {
             case INTEGER:
                 try {
                     return Integer.valueOf(result);
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                     return field.getType().getDefaultValue();
                 }
                 
             case REAL:
                 try {
                     return Float.valueOf(result);
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                     return field.getType().getDefaultValue();
                 }
                 
