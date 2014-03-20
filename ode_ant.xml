@@ -38,6 +38,8 @@
 	        </zipfileset>
 	    	<zipfileset dir="." includes="LICENSE.log4j2.txt" fullpath="ode/LICENSE.log4j2.txt"/>
 	    	<zipfileset dir="." includes="NOTICE.log4j2.txt" fullpath="ode/NOTICE.log4j2.txt"/>
+	    	<zipfileset dir="." includes="LICENSE" fullpath="ode/LICENSE"/>
+            <zipfileset dir="." includes="README" fullpath="ode/README"/>
 	    </zip>
 	</target>
 	
@@ -60,6 +62,8 @@
             	<include name="build.number"/>
             	<include name="LICENSE.log4j2.txt"/>
             	<include name="NOTICE.log4j2.txt"/>
+            	<include name="LICENSE"/>
+                <include name="README"/>
             	<include name="log4j-api-2.0-beta9-sources.jar"/>
                 <include name="log4j-core-2.0-beta9-sources.jar"/>
             	<include name="ode_ant.xml"/>
