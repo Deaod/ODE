@@ -115,8 +115,8 @@ public class W3DFile extends W3OBase<Doodad> {
          * @return the property identified by the specified ID or <code>null</code> if no such property exists.
          */
         @SuppressWarnings("unchecked")
-        public VariationProperty<Doodad> getProperty(final int fieldId) {
-            return (VariationProperty<Doodad>) getProperty(Property.generateKey(fieldId));
+        public VariationProperty<Doodad> getProperty(final int fieldId, final int variation) {
+            return (VariationProperty<Doodad>) getProperty(VariationProperty.generateKey(fieldId, variation));
         }
         
         /**
@@ -127,8 +127,8 @@ public class W3DFile extends W3OBase<Doodad> {
          * @return the property identified by the specified ID or <code>null</code> if no such property exists.
          */
         @SuppressWarnings("unchecked")
-        public VariationProperty<Doodad> getPropertyEx(final int fieldId) {
-            return (VariationProperty<Doodad>) getPropertyEx(Property.generateKey(fieldId));
+        public VariationProperty<Doodad> getPropertyEx(final int fieldId, final int variation) {
+            return (VariationProperty<Doodad>) getPropertyEx(VariationProperty.generateKey(fieldId, variation));
         }
         
         /**
@@ -137,8 +137,8 @@ public class W3DFile extends W3OBase<Doodad> {
          * @param fieldId the ID to look for.
          * @return <code>true</code> if this doodad has a property with the specified ID, <code>false</code> otherwise.
          */
-        public boolean hasProperty(final int fieldId) {
-            return hasProperty(Property.generateKey(fieldId));
+        public boolean hasProperty(final int fieldId, final int variation) {
+            return hasProperty(VariationProperty.generateKey(fieldId, variation));
         }
         
         /**
@@ -148,7 +148,7 @@ public class W3DFile extends W3OBase<Doodad> {
          * @param property the property to add.
          */
         public void addProperty(final VariationProperty<Doodad> property) {
-            if (hasProperty(property.getFieldId())) {
+            if (hasProperty(property.getFieldId(), property.getVariation())) {
                 return;
             }
             

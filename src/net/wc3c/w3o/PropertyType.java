@@ -24,7 +24,7 @@ public enum PropertyType {
     ATTRIBUTE_TYPE(20),
     ATTACK_BITS(21);
     
-    private int value;
+    private final int value;
     
     private PropertyType(final int value) {
         this.value = value;
@@ -37,6 +37,5 @@ public enum PropertyType {
             }
         }
         throw new RuntimeException("Unknown PropertyType value: " + value);
-        //return null;
     }
 }
