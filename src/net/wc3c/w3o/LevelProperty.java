@@ -47,9 +47,9 @@ public class LevelProperty<T extends W3Object<?>> extends Property<T> {
     @Override
     protected void readFrom(final BufferedDataChannel dc) throws IOException {
         setFieldId(dc.readIntBE());
+        setType(PropertyType.fromInt(dc.readInt()));
         setLevel(dc.readInt());
         setDataPointer(dc.readInt());
-        setType(PropertyType.fromInt(dc.readInt()));
         switch (getType()) {
             case INTEGER:
                 setValue(new Integer(dc.readInt()));
